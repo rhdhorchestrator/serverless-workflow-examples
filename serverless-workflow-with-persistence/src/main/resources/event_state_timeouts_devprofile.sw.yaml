@@ -1,0 +1,70 @@
+specVersion: "0.8"
+id: event-timeout-with-persitence
+name: Event Timeout With Persistence
+annotations:
+  - "workflow-type/infrastructure"
+version: "1.0"
+start: PrintStartMessage
+events:
+  - name: event1
+    source: ''
+    type: event1_event_type
+  - name: event2
+    source: ''
+    type: event2_event_type
+functions:
+  - name: systemOut
+    type: custom
+    operation: sysout
+states:
+  - name: PrintStartMessage
+    type: operation
+    actions:
+      - name: printSystemOut
+        functionRef:
+          refName: systemOut
+          arguments:
+            message: "${\"event-state-timeouts: \" + $WORKFLOW.instanceId + \" has started.\"}"
+    transition: WaitForEvent1
+  - name: WaitForEvent1
+    type: event
+    onEvents:
+      - eventRefs: [ event1 ]
+        eventDataFilter:
+          data: "${ \"The event1 was received.\" }"
+          toStateData: "${ .exitMessage1 }"
+        actions:
+          - name: printAfterEvent1
+            functionRef:
+              refName: systemOut
+              arguments:
+                message: "${\"event-state-timeouts: \" + $WORKFLOW.instanceId + \" executing actions for event1.\"}"
+    timeouts:
+      eventTimeout: PT30S
+    transition: WaitForEvent2
+  - name: WaitForEvent2
+    type: event
+    onEvents:
+      - eventRefs: [ event2 ]
+        eventDataFilter:
+          data: "${ \"The event2 was received.\" }"
+          toStateData: "${ .exitMessage2 }"
+        actions:
+          - name: printAfterEvent2
+            functionRef:
+              refName: systemOut
+              arguments:
+                message: "${\"event-state-timeouts: \" + $WORKFLOW.instanceId + \" executing actions for event2.\"}"
+    timeouts:
+      eventTimeout: PT30S
+    transition: PrintExitMessage
+  - name: PrintExitMessage
+    type: operation
+    actions:
+      - name: printSystemOut
+        functionRef:
+          refName: systemOut
+          arguments:
+            message: "${\"event-state-timeouts: \" + $WORKFLOW.instanceId + \" has finalized. \" + if .exitMessage1 != null then .exitMessage1 else \"The event state did not receive event1, and the timeout has overdue\" end + \" -- \" + if .exitMessage2 != null then .exitMessage2 else \"The event state did not receive event2, and the timeout has overdue\" end }"
+    end: true
+
