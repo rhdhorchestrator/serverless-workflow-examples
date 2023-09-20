@@ -16,6 +16,8 @@ functions:
   - name: systemOut
     type: custom
     operation: sysout
+timeouts:
+  eventTimeout: PT30S
 states:
   - name: PrintStartMessage
     type: operation
@@ -39,8 +41,7 @@ states:
               refName: systemOut
               arguments:
                 message: "${\"event-state-timeouts: \" + $WORKFLOW.instanceId + \" executing actions for event1.\"}"
-    timeouts:
-      eventTimeout: PT30S
+    
     transition: WaitForEvent2
   - name: WaitForEvent2
     type: event
@@ -55,8 +56,6 @@ states:
               refName: systemOut
               arguments:
                 message: "${\"event-state-timeouts: \" + $WORKFLOW.instanceId + \" executing actions for event2.\"}"
-    timeouts:
-      eventTimeout: PT30S
     transition: PrintExitMessage
   - name: PrintExitMessage
     type: operation
