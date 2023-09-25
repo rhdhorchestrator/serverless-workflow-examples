@@ -6,7 +6,7 @@ Deployment steps for databases
 
 ### PostgreSQL
 
-We are using PostgreSQL in a container running on a local `kind` cluster.
+We are using PostgreSQL in a container running on a local `minikube` cluster.
 
 
 You may need to configure/update the following properties in `application.properties`:
@@ -63,25 +63,3 @@ WARNING: The configured password will be ignored on new installation in case whe
 
 Either port-forward the service to use `localhost` `kubectl port-forward --namespace default svc/postgres-postgresql 5432:5432 &` or use the DNS address given in the output (here `postgres-postgresql.default.svc.cluster.local`) in the `application.properties` of your application.
 
-## JobService
-To deploy the JobService in a local K8S/OCP cluster, you need to run the following command:
-```bash
-$ kubectl -n workflow-with-persistence apply -f k8s/data-index-service-postgresql.yml 
-service/data-index-service-postgresql created
-deployment.apps/data-index-service-postgresql created
-trigger.eventing.knative.dev/data-index-service-postgresql-processes-trigger created
-trigger.eventing.knative.dev/data-index-service-postgresql-jobs-trigger created
-```
-
-## DataIndex
-To deploy the DataIndex in a local K8S/OCP cluster, you need to run the following command:
-```bash
-$ kubectl -n workflow-with-persistence apply -f k8s/jobs-service-postgresql.yml 
-broker.eventing.knative.dev/default created
-sinkbinding.sources.knative.dev/jobs-service-postgresql-sb created
-service/jobs-service-postgresql created
-deployment.apps/jobs-service-postgresql created
-trigger.eventing.knative.dev/jobs-service-postgresql-create-job-trigger created
-trigger.eventing.knative.dev/jobs-service-postgresql-cancel-job-trigger created
-```
-Then run `kubectl port-forward --namespace  workflow-with-persistence svc/data-index-service-postgresql 8888:80 &` to access the [GraphQL UI](http://localhost:8888/graphiql/)

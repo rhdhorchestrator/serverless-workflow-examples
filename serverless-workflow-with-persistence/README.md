@@ -26,7 +26,8 @@ In the configured example, we are using the admin `postgres` account.
 
 ## Run it!
 ### In a K8S cluster
-/!\ Do not create a Kind/Minikube cluster yet, one will be created using Knative CLI /!\
+/!\ With `Kind` local cluster, the JobService is not able to work properly; there is a network issue and its pod cannot reach the workflow service.
+/!\ Do not create a Minikube cluster yet, one will be created using Knative CLI /!\
 
 Install quickstart plugin for Knative CLI: https://knative.dev/docs/getting-started/quickstart-install/#install-the-knative-quickstart-plugin
 
@@ -40,18 +41,45 @@ $ kubectl create ns workflow-with-persistence
 namespace/workflow-with-persistence created
 ```
 
+#### Deploy the JobService
+To have the JobService run in standalone mode, you need to install quickstart plugin for Knative CLI: https://knative.dev/docs/getting-started/quickstart-install/#install-the-knative-quickstart-plugin first.
+
+To deploy the JobService in a local K8S/OCP cluster, you need to run the following command:
+```bash
+$ kubectl -n workflow-with-persistence apply -f k8s/data-index-service-postgresql.yml 
+service/data-index-service-postgresql created
+deployment.apps/data-index-service-postgresql created
+trigger.eventing.knative.dev/data-index-service-postgresql-processes-trigger created
+trigger.eventing.knative.dev/data-index-service-postgresql-jobs-trigger created
+```
+
+#### Deploy the DataIndex
+To have the JobService run in standalone mode, you need to install quickstart plugin for Knative CLI: https://knative.dev/docs/getting-started/quickstart-install/#install-the-knative-quickstart-plugin first.
+
+To deploy the DataIndex in a local K8S/OCP cluster, you need to run the following command:
+```bash
+$ kubectl -n workflow-with-persistence apply -f k8s/jobs-service-postgresql.yml 
+broker.eventing.knative.dev/default created
+sinkbinding.sources.knative.dev/jobs-service-postgresql-sb created
+service/jobs-service-postgresql created
+deployment.apps/jobs-service-postgresql created
+trigger.eventing.knative.dev/jobs-service-postgresql-create-job-trigger created
+trigger.eventing.knative.dev/jobs-service-postgresql-cancel-job-trigger created
+```
+Then run `kubectl port-forward --namespace  workflow-with-persistence svc/data-index-service-postgresql 8888:80 &` to access the [GraphQL UI](http://localhost:8888/graphiql/)
 Deploy [DataIndex](../docs/deployment.md#DataIndex) and [JobService](../docs/deployment.md#JobService) described in the [deployment file](../docs/deployment.md)
+
+#### Deploy the workflow
+In order to have the image create available in the minikube cluster, make sure to run
+```bash
+eval $(minikube docker-env)
+```
 
 Generates the image containing the workflow:
 ```bash
 $ mvn clean package -Pknative
 ```
 
-Load the generated image in the king cluster's repo:
-```bash
-$ kind load  docker-image  dev.local/gabriel/workflow-with-persistence:1.0.0-SNAPSHOT --name knative
-Image: "" with ID "sha256:4bdcab27e5d0f5d591c301642d2c35b09fe58d6401f8739e324168bceb0b7393" not yet present on node "knative-control-plane", loading...
-```
 Deploy the Knative resources to serve the workflow:
 ```bash
 $ kubectl -n workflow-with-persistence apply -f target/kubernetes/knative.yml 
