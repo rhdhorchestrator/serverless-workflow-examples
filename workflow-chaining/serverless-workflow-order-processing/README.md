@@ -86,10 +86,10 @@ java -jar target\quarkus-app\quarkus-run.jar
 ```
 
 ### Package and Run using Local Native Image
-Note that this requires GRAALVM_HOME to point to a valid GraalVM installation
+Note that this requires GRAALVM_HOME to point to a valid GraalVM installation. You have to run the knative eventing and pass the url as environment variable `K_SINK`
 
 ```sh
-mvn clean package -Pknative
+K_SINK=http://localhost:8181  mvn clean package -Pknative
 ```
 
 To run the generated native executable, generated in `target/`, execute
