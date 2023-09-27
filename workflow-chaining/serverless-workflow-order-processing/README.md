@@ -1,6 +1,12 @@
+# Workflow Chaining - Objective
+This example is trying to address the Jira Task - https://issues.redhat.com/browse/FLPATH-609
+We are going to show an example of how a workflow can embed another workflow and also chain the different workflows. Demonstrate an example how you can pass the data between the workflow steps or between workflows.
+
+As part of the serverless specification, we have a [subworkflowRef](https://github.com/serverlessworkflow/specification/blob/main/specification.md#subflowref-definition) element which will let us achieve the functionality. The control of the execution can be achieved by injecting the state data in the steps. All the data is communicated between the steps or workflows using events. We should be able to inject any type of data.
+
 # Kogito Serverless Workflow Order Processing Example
 
-## Description
+## Example Description
 
 In this example we will see how to use the [Serverless Workflow specification](https://github.com/serverlessworkflow/specification)
 implementation on Kogito to orchestrate events with Knative Eventing.
@@ -8,17 +14,17 @@ implementation on Kogito to orchestrate events with Knative Eventing.
 This use case is about processing an incoming order and producing new events based on the order details.
 The images below illustrates the workflow:
 
-![](docs/order-workflow.sw.yaml.png)
+![](docs/order-workflow.svg)
 
 The main workflow process the incoming Order event and start a parallel state calling two subflows: 
 Fraud Handling and Shipping Handling. The workflow will end once **both** subflows end.
 
-![](docs/fraud-handling.sw.yaml.png)
+![](docs/fraud-handling.svg)
 
 Fraud Handling will produce a new `FraudEvaluation` event if the order is above 1000 USD. Any other system or
 service in the architecture can then read this event and react upon it, like canceling the order for example.
 
-![](docs/shipping-handling.sw.yaml.png)
+![](docs/shipping-handling.svg)
 
 In parallel, regarding or not the order would need fraud evaluation, the workflow will produce events classifying
 the required Shipping service: International or Domestic. For this example, domestic shipping is any 
@@ -83,13 +89,13 @@ java -jar target\quarkus-app\quarkus-run.jar
 Note that this requires GRAALVM_HOME to point to a valid GraalVM installation
 
 ```sh
-mvn clean package -Pnative
+mvn clean package -Pknative
 ```
 
 To run the generated native executable, generated in `target/`, execute
 
 ```sh
-./target/serverless-workflow-order-processing-runner
+./target/serverless-workflow-order-processing.jar
 ```
 
 ### OpenAPI (Swagger) documentation
@@ -112,7 +118,7 @@ that you can use to look at available REST endpoints and send test requests.
 First thing, fire up the sink application using podman/docker:
 
 ```shell script
-$ podman run --rm -it -p 8181:8080 gcr.io/knative-releases/knative.dev/eventing-contrib/cmd/event_display
+$ docker run --rm -it -p 8185:8080 gcr.io/knative-releases/knative.dev/eventing-contrib/cmd/event_display
 ```
 
 This is the same image used by Knative Eventing demos. It's running on port 8181 to not clash with the example application.
