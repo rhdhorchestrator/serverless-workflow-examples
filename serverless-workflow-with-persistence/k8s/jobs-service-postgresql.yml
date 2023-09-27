@@ -75,6 +75,8 @@ spec:
                   fieldPath: metadata.namespace
             - name: KOGITO_JOBS_SERVICE_KNATIVE_EVENTS
               value: "true"
+            - name: KOGITO_JOBS_SERVICE_LOADJOBFROMCURRENTTIMEINTERVALINMINUTES
+              value: "10"
             - name: JOBS_SERVICE_PERSISTENCE
               value: "postgresql"
             - name: QUARKUS_DATASOURCE_USERNAME
