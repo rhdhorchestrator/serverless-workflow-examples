@@ -1,3 +1,4 @@
 /workflow-chaining/serverless-workflow-order-processing/target/
 **/target/*
 /workflow-chaining/serverless-workflow-order-processing/.idea/
+/workflow-chaining/target/
