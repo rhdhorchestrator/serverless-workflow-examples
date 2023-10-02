@@ -2,3 +2,6 @@
 **/target/*
 /workflow-chaining/serverless-workflow-order-processing/.idea/
 /workflow-chaining/target/
+**/.DS_Store
+**/.idea
+
