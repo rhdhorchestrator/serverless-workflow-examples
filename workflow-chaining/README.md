@@ -14,17 +14,17 @@ implementation on Kogito to orchestrate events with Knative Eventing.
 This use case is about processing an incoming order and producing new events based on the order details.
 The images below illustrates the workflow:
 
-![](Documents/Src/parodos-dev/serverless-workflow-examples/workflow-chaining/docsments/Src/parodos-dev/serverless-workflow-examples/workflow-chaining/docs/order-workflow.svg)
+![order-workflow.svg](docs/order-workflow.svg)
 
 The main workflow process the incoming Order event and start a parallel state calling two subflows: 
 Fraud Handling and Shipping Handling. The workflow will end once **both** subflows end.
 
-![](Documents/Src/parodos-dev/serverless-workflow-examples/workflow-chaining/docsments/Src/parodos-dev/serverless-workflow-examples/workflow-chaining/docs/fraud-handling.svg)
+![fraud-handling.svg](docs/fraud-handling.svg)
 
 Fraud Handling will produce a new `FraudEvaluation` event if the order is above 1000 USD. Any other system or
 service in the architecture can then read this event and react upon it, like canceling the order for example.
 
-![](Documents/Src/parodos-dev/serverless-workflow-examples/workflow-chaining/docsments/Src/parodos-dev/serverless-workflow-examples/workflow-chaining/docs/shipping-handling.svg)
+![shipping-handling.svg](docs/shipping-handling.svg)
 
 In parallel, regarding or not the order would need fraud evaluation, the workflow will produce events classifying
 the required Shipping service: International or Domestic. For this example, domestic shipping is any 
