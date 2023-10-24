@@ -1,0 +1,11 @@
+apiVersion: v2
+name: eda-infra
+description: |
+  A Helm chart to install the serverless infrastructure:
+  * openshift-serverless namespace
+  * Red Hat Serverless operator
+  * default KnativeEventing instance in knative-eventing namespace
+  * default KnativeServing instance in knative-serving namespace
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

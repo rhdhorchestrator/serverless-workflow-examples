@@ -1,0 +1,37 @@
+{{ .Release.Name }} release of chart {{ .Chart.Name }} installed in namespace {{ .Values.namespace.name }}
+
+Run the following to verify the release status and export the configuration:
+  helm status {{ .Release.Name }}
+  helm get all {{ .Release.Name }}
+
+{{/* Empty line */}}
+Verify the status of the Knative eventing resources:
+  oc get -n {{ .Values.namespace.name }} trigger,broker,sinkbinding
+
+Verify the status of the Knative services:
+  oc get -n {{ .Values.namespace.name }} ksvc
+
+Run the following to wait until the services are ready:
+  oc wait -n {{ .Values.namespace.name }} ksvc -l app=jira-listener --for=condition=Ready --timeout=5m
+  oc wait -n {{ .Values.namespace.name }} ksvc -l app=escalation-swf --for=condition=Ready --timeout=5m
+{{- if .Values.eventdisplay.enabled }}
+  oc wait -n {{ .Values.namespace.name }} ksvc -l app=event-display --for=condition=Ready --timeout=5m
+{{- end }}
+
+The URL to be used in the Jira webhook is:
+{{- if .Values.letsEncryptCertificate }}
+  JIRA_LISTENER_URL=$(oc get route -n knative-serving-ingress {{ .Values.jiralistener.name }} -oyaml | yq '.status.ingress[0].host')
+  echo "https://${JIRA_LISTENER_URL//\"/}/webhook/jira"
+{{- else }}
+  JIRA_LISTENER_URL=$(oc get ksvc jira-listener -oyaml | yq '.status.url')
+  echo "${JIRA_LISTENER_URL//\"/}/webhook/jira"
+{{- end }}
+
+Log the applications using:
+  oc logs -f -l app=jira-listener -c jira-listener -n {{ .Values.namespace.name }}
+  oc logs -f -l app=escalation-swf -c escalation-swf -n {{ .Values.namespace.name }}
+{{- if .Values.eventdisplay.enabled }}
+  oc logs -f -l app=event-display -c event-display -n {{ .Values.namespace.name }}
+{{- end }}
+
+

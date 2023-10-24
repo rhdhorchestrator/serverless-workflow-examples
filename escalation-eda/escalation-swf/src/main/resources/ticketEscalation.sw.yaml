@@ -1,0 +1,89 @@
+specVersion: "0.8"
+id: ticket-escalation
+name: Ticket escalation
+annotations:
+  - "workflow-type/infrastructure"
+version: 0.0.1
+timeouts:
+  workflowExecTimeout: PT24H
+start: CreateJiraIssue
+dataInputSchema: ticket-escalation-schema.json
+functions:
+  - name: sendEmail
+    operation: 'specs/mailtrap.yaml#sendEmail'
+  - name: createJiraIssue
+    operation: specs/jira.yaml#createIssue
+  - name: createK8sNamespace
+    operation: specs/kube.yaml#createCoreV1Namespace
+  - name: logInfo
+    type: custom
+    operation: "sysout:INFO"
+events:
+ - name: approvalEvent
+   # TODO add property
+   source: jira.listener 
+   # TODO add property
+   type: dev.parodos.escalation
+states:
+  - name: CreateJiraIssue
+    type: callback
+    action:
+      name: Create Jira Issue
+      functionRef:
+        refName: createJiraIssue
+        arguments:
+          update: {}
+          fields:
+            summary: '"Request For New Namespace: " + .namespace'
+            labels:
+              - '$SECRET.jira_label_workflowInstanceId + "=" + $WORKFLOW.instanceId'
+              - "$SECRET.jira_label_workflowName"
+            issuetype:
+              id: "$SECRET.jira_issue_type"
+            project:
+              key: "$SECRET.jira_project"
+      actionDataFilter:
+        toStateData: .jiraIssue
+    eventRef: approvalEvent
+    transition: CreateK8sNamespace
+    stateDataFilter:
+      output: ". += { jiraBrowser: ((.jiraIssue.self  | sub(\"rest/.*\"; \"browse/\")) + .jiraIssue.key) }"
+  # - name: Escalate
+  #   type: operation
+  #   actions:
+  #     - name: "printAction"
+  #       functionRef:
+  #         refName: "logInfo"
+  #         arguments:
+  #           message: "\"Escalate is \\(.)\""
+  #     - name: "sendEmail"
+  #       functionRef:
+  #         refName: sendEmail
+  #         arguments:
+  #           inbox_id: $SECRET.mailtrap_inbox_id | tonumber
+  #           to: 
+  #             - email: .manager
+  #               name: "Escalation Manager"
+  #           from:
+  #             email: $SECRET.sender_email
+  #             name: "Escalation service"
+  #           subject: " \"Escalation ticket \" + .jiraIssue.key "
+  #           html: '"Please manage escalation ticket <a href=\"" + .jiraBrowser + "\">" + .jiraIssue.key + "</a>"'
+  #   end: true
+  #   stateDataFilter:
+  #     output: ". += { timer: { triggered: true, startTime: .timer.startTime, elapsedSeconds: 0 }}"
+  - name: CreateK8sNamespace
+    type: operation
+    actions:
+      - functionRef:
+          refName: createK8sNamespace
+          arguments:
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: ".namespace"
+        actionDataFilter:
+          toStateData: .createdNamespace
+    stateDataFilter:
+      output: "{createdNamespace: .createdNamespace}"
+    end: true

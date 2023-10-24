@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "namespace": {
+      "type": "string",
+      "description": "Name of the requested namespace"
+    },
+    "manager": {
+      "type": "string",
+      "format": "email",
+      "description": "Email address of the escalation manager"
+    }
+  },
+  "required": [
+    "namespace",
+    "manager"
+  ]
+}
