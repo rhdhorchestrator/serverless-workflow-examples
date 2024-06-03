@@ -1,0 +1,30 @@
+{
+  "$id": "classpath:/schemas/onboarding-schema.json",
+  "title": "Data input schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "inputs": {
+      "title": "Inputs",
+      "type": "object",
+      "properties": {
+        "operationsProjectKey": {
+          "title": "Operations Project Key",
+          "description": "JIRA project key for operations",
+          "type": "string",
+          "default": "OP"
+        },
+        "auditProjectKey": {
+          "title": "Audit Project Key",
+          "description": "JIRA project key for auditing",
+          "type": "string",
+          "default": "AUD"
+        }        
+      }
+    }
+  },
+  "required": [
+    "operationsProjectKey",
+    "auditProjectKey"
+  ]
+}
