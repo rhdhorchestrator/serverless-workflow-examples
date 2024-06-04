@@ -5,7 +5,61 @@ info:
   description: JIRA Actions BS API
   version: 0.0.1
 paths:
-  "/rest/api/2/issue/{issueIdOrKey}":
+  /rest/api/2/issue/{issueIdOrKey}/transitions:
+    post:
+      tags:
+        - Issues
+      summary: Transition issue
+      description: Performs an issue transition and, if the transition has a screen, updates the fields from the transition screen.
+      operationId: transitionIssue
+      parameters:
+        - name: issueIdOrKey
+          in: path
+          description: The ID or key of the issue.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Input parameters for the action transitionIssue in BS
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransitionIssue'
+      responses:
+        default:
+          description: Transition Issue Response
+          content:
+            application/json:
+              schema:
+                type: object
+      deprecated: false
+      security:
+        - basicAuth: []
+    get:
+      tags:
+        - Issues
+      summary: Get issue transitions
+      description: Get issue transitions
+      operationId: getIssueTransitions
+      parameters:
+        - name: issueIdOrKey
+          in: path
+          description: The ID or key of the issue.
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Transition Issue Response
+          content:
+            application/json:
+              schema:
+                type: object
+      deprecated: false
+      security:
+        - basicAuth: []
+  /rest/api/2/issue/{issueIdOrKey}:
     get:
       deprecated: false
       security:
@@ -136,7 +190,7 @@ paths:
       tags:
       - Issues
       x-atlassian-connect-scope: READ
-  "/rest/api/2/issue":
+  /rest/api/2/issue:
     post:
       tags:
       - Issues
@@ -185,6 +239,27 @@ paths:
       - basicAuth: []
 components:
   schemas:
+    TransitionIssue:
+      type: object
+      properties:
+        transition:
+          type: object
+          properties:
+            id:
+              type: string
+        update:
+          type: object
+          properties:
+            comment:
+              type: array
+              items:
+                type: object
+                properties:
+                  add:
+                    type: object
+                    properties:
+                      body:
+                        type: string
     ChangeDetails:
       additionalProperties: false
       description: A change item.

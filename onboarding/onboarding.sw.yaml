@@ -136,7 +136,7 @@ states:
           arguments:
             issueIdOrKey: .auditJiraCreateIssueResult.id
             transition:
-              id: .jiraGetTransitionResult.transitions[] | select(.name | contains("Close")) | .id
+              id: .jiraGetTransitionResult.transitions[] | select(.to.name | contains("Done")) | .id
             update:
               comment:
                 - add:

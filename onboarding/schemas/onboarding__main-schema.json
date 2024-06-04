@@ -20,11 +20,12 @@
           "type": "string",
           "default": "AUD"
         }        
-      }
+      },
+      "required": [
+        "operationsProjectKey",
+        "auditProjectKey"
+      ]
     }
-  },
-  "required": [
-    "operationsProjectKey",
-    "auditProjectKey"
-  ]
+  }
+  
 }
