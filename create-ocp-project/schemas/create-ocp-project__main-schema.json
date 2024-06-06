@@ -19,11 +19,17 @@
           "description": "JIRA project key for auditing",
           "type": "string",
           "default": "AUD"
+        },
+        "projectName": {
+          "title": "Project Name",
+          "description": "OCP project to create",
+          "type": "string"
         }        
       },
       "required": [
         "operationsProjectKey",
-        "auditProjectKey"
+        "auditProjectKey",
+        "projectName"
       ]
     }
   }
