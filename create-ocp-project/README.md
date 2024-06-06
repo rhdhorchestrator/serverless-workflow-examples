@@ -1,5 +1,5 @@
-# Onboarding workflow
-The onboarding workflow is a workflow that demonstrates the following features of the serverless workflow technology:
+# Create OpenShift Project workflow
+The Create OpenShift Project workflow is a workflow that demonstrates the following features of the serverless workflow technology:
 * Integration with external service, in this case, Jira Cloud via its OpenAPI
 * Polling
 * Conditional branching
@@ -19,4 +19,4 @@ This workflow can be extended to introduce more capabilities, such as creating K
 - `Operations Jira Project Key` [required] - the Jira Project Key to which the workflow is configured to work and has permission to create and update and issue of type Task.
 
 ## Workflow diagram
-![Onboarding diagram](https://github.com/parodos-dev/serverless-workflow-examples/blob/main/onboarding/onboarding.svg?raw=true)
+![Create OpenShift Project diagram](https://github.com/parodos-dev/serverless-workflow-examples/blob/main/create-ocp-project/create-ocp-project.svg?raw=true)

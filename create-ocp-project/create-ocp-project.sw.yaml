@@ -1,9 +1,9 @@
-id: onboarding
+id: create-ocp-project
 version: "1.0"
 specVersion: "0.8"
-name: "Onboarding with approval and notifications"
-description: The Onboarding workflow demonstrates approval, operations placeholder and notifications
-dataInputSchema: schemas/onboarding__main-schema.json
+name: "Create OpenShift Project"
+description: Creating an OpenShift Project
+dataInputSchema: schemas/create-ocp-project__main-schema.json
 functions:
   - name: jiraCreateIssue
     operation: specs/jira-openapi.yaml#createIssue
@@ -74,7 +74,7 @@ states:
             title: "Jira ticket created"
             message: "Jira ticket created"
             origin: "SonataFlow"
-            topic: "Onboarding workflow"
+            topic: "Create OCP Project workflow"
             targetUsers:
               - "default/guest" # replace with the approver user
             actions:

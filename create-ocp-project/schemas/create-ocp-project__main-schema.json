@@ -1,5 +1,5 @@
 {
-  "$id": "classpath:/schemas/onboarding-schema.json",
+  "$id": "classpath:/schemas/create-ocp-project-schema.json",
   "title": "Data input schema",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
