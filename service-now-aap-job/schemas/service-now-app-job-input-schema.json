@@ -47,7 +47,7 @@
           "type": "string",
           "description": "Job template",
           "enum": [
-            "postgres_rhel"
+            "Demo Job Template"
           ]
         },
         "inventoryGroup": {
