@@ -38,6 +38,7 @@ states:
           arguments:
             description: ".serviceNow.description"
             short_description: ".serviceNow.short_description"
+            # This status code '-4' put the change request under assessment so it can be reviewed by the approver (New -> Asses (here) -> Authorized -> ...)
             state: "-4"
             assigned_to: $SECRET.service_now_approver
             assignment_group: $SECRET.service_now_approver_group

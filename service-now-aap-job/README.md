@@ -23,7 +23,7 @@ The following inputs are required:
 
 ## Prerequisites
 * A running instance of AAP with admin credentials. 
-* A running instance of Backstage notification plugin.
+* A running instance of Backstage with notification plugin configured
 * An available ServiceNow instance with admin credentials.
 
 ## Workflow application configuration
