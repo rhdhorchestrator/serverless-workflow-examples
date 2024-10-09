@@ -12,10 +12,7 @@ The following inputs are required:
 - for Service Now
     - description of the task
     - short description of the task
-    - comments
-    - state
     - assignee
-    - additional assignee list
     - assignment group
 
 ## Workflow diagram
