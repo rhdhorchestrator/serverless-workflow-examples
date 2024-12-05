@@ -12,7 +12,7 @@ start: LaunchSoftwareTemplate
 extensions:
   - extensionid: workflow-uri-definitions
     definitions:
-      notifications: "https://raw.githubusercontent.com/parodos-dev/serverless-workflows/main/shared/specs/notifications-openapi.yaml"
+      notifications: "https://raw.githubusercontent.com/parodos-dev/serverless-workflows/main/workflows/shared/specs/notifications-openapi.yaml"
 functions:
   - name: LaunchSoftwareTemplate
     operation: specs/scaffolder-openapi.yaml#createTask
@@ -61,9 +61,11 @@ states:
               imageNamespace: .ci.imageNamespace
               quayUserName: '["*" * ($SECRET.quay_username | length)] | add'
               quayPassword: '["*" * ($SECRET.quay_password | length)] | add'
+              ghToken: '["*" * ($SECRET.ghToken | length)] | add'
             secrets:
               quayUserName: $SECRET.quay_username
               quayPassword: $SECRET.quay_password
+              ghToken: $SECRET.ghToken
         actionDataFilter:
           toStateData: .launchedTemplate
     transition: GetSoftwareTemplate
@@ -138,6 +140,7 @@ states:
             limit: (.aap.limit | tonumber)
             extra_vars:
               rhel_inventory_group: (.aap.inventoryGroup | tonumber)
+              targetNamespace: $SECRET.target_namespace
         actionDataFilter:
           toStateData: .launchedJob
     stateDataFilter:
