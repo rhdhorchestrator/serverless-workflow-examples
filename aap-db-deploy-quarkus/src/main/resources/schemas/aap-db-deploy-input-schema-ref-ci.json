@@ -7,14 +7,20 @@
       "title": "Select a CI method",
       "type": "string",
       "description": "This action will create a CI pipeline for your application based on chosen method",
-      "enum": ["./github-actions/", "../../../skeletons/tekton/"],
+      "enum": [
+        "./github-actions/",
+        "../../../skeletons/tekton/"
+      ],
       "default": "./github-actions/"
     },
     "imageRepository": {
       "title": "Select a registry",
       "type": "string",
-      "enum": ["quay-lzh25.apps.cluster-lzh25.sandbox662.opentlc.com", "image-registry.openshift-image-registry.svc:5000"],
-      "default": "quay-lzh25.apps.cluster-lzh25.sandbox662.opentlc.com"
+      "enum": [
+        "quay.io",
+        "image-registry.openshift-image-registry.svc:5000"
+      ],
+      "default": "quay.io"
     },
     "imageNamespace": {
       "title": "Quay.io Namespace",

@@ -17,22 +17,22 @@ paths:
             type: integer
       requestBody:
         content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LaunchJobRequest'
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LaunchJobRequest"
       responses:
         "201":
           description: Created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LaunchJobResponse'
+                $ref: "#/components/schemas/LaunchJobResponse"
         "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: "#/components/schemas/UnauthorizedError"
       security:
         - basicAuth: []
   /api/v2/jobs/{job_id}/:
@@ -51,13 +51,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetJobResponse'
+                $ref: "#/components/schemas/GetJobResponse"
         "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnauthorizedError'
+                $ref: "#/components/schemas/UnauthorizedError"
       security:
         - basicAuth: []
 components:
@@ -71,6 +71,8 @@ components:
           type: object
           properties:
             rhel_inventory_group:
+              type: string
+            targetNamespace:
               type: string
       additionalProperties: false
     LaunchJobResponse:

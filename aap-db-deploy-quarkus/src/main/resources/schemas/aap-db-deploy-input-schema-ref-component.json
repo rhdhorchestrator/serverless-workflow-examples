@@ -24,14 +24,16 @@
       "title": "Owner",
       "type": "string",
       "description": "The owner of the component",
-      "pattern": "^(user|group):[a-z0-9]([-a-z0-9]*[a-z0-9])?/([a-z0-9]([-a-z0-9]*[a-z0-9])?)$",
+      "pattern": "^(user|group):[A-Za-z0-9]([-A-Za-z0-9]*[A-Za-z0-9])?/([A-Za-z0-9]([-A-Za-z0-9]*[A-Za-z0-9])?)$",
       "default": "group:default/development"
     },
     "system": {
       "title": "System",
       "type": "string",
       "description": "System",
-      "enum": ["system:default/janus-orchestrator"]
+      "enum": [
+        "system:default/janus-orchestrator"
+      ]
     },
     "port": {
       "title": "Application Port",
