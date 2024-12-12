@@ -67,8 +67,8 @@ linking to the [move2kube][3] workflow that will generate k8s manifests for cont
 1. When the workflow completes there should be a report link on the exit state of the workflow (also named variables in SonataFlow)
 
 # Workflow Diagram
-![mta workflow diagram](https://github.com/parodos-dev/serverless-workflows/blob/main/mta/mta.svg?raw=true)
+![mta workflow diagram](https://github.com/rhdhorchestrator/serverless-workflows/blob/main/mta/mta.svg?raw=true)
 
 [1]: https://developers.redhat.com/products/mta/download
-[2]: https://github.com/parodos-dev/serverless-workflows/blob/main/assessment/schema/workflow-options-output-schema.json  
-[3]: https://github.com/parodos-dev/serverless-workflows/tree/main/move2kube
+[2]: https://github.com/rhdhorchestrator/serverless-workflows/blob/main/assessment/schema/workflow-options-output-schema.json
+[3]: https://github.com/rhdhorchestrator/serverless-workflows/tree/main/move2kube

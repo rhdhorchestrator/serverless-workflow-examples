@@ -9,7 +9,7 @@ timeouts:
 extensions:
   - extensionid: workflow-uri-definitions
     definitions:
-      notifications: https://raw.githubusercontent.com/parodos-dev/serverless-workflows/main/shared/specs/notifications-openapi.yaml
+      notifications: https://raw.githubusercontent.com/rhdhorchestrator/serverless-workflows/main/shared/specs/notifications-openapi.yaml
 start: CreateNotification
 functions:
   - name: CreateNotification

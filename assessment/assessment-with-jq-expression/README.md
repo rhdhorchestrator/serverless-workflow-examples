@@ -6,7 +6,7 @@ For simplicity sake, the assessment here consists of checking if `inputText` con
 **Note**: this example assumes that the dummy infrastructure workflow options `dummy-infra-workflow-option` provided with the core workflow is deployed and up-and-running otherwise it will be filtered out from the precheck subflow upon assessment execution.
 
 ## Workflow diagram
-![Assessment workflow diagram](https://github.com/parodos-dev/serverless-workflow-examples/blob/main/assessment/assessment-with-jq-expression/assessment-with-jq-expression.svg?raw=true)
+![Assessment workflow diagram](https://github.com/rhdhorchestrator/serverless-workflow-examples/blob/main/assessment/assessment-with-jq-expression/assessment-with-jq-expression.svg?raw=true)
 
 ## Assessment logic
 The assessment logic is implemented in the workflow definition in `assessment-with-jq-expression.sw.yaml` file as follows:

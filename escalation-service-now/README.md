@@ -1,7 +1,7 @@
 An escalation workflow integrated with ServiceNow using [SonataFlow](https://sonataflow.org/serverlessworkflow/latest/index.html).
 
 ## Workflow diagram
-![Escalation with serviceNow workflow diagram](https://github.com/parodos-dev/serverless-workflow-examples/blob/main/escalation-service-now/serviceNowEscalation.svg?raw=true)
+![Escalation with serviceNow workflow diagram](https://github.com/rhdhorchestrator/serverless-workflow-examples/blob/main/escalation-service-now/serviceNowEscalation.svg?raw=true)
 
 ## Prerequisite
 * An available ServiceNow instance with admin credentials.
@@ -38,7 +38,7 @@ yarn start:backstage
 ```shell
 curl -X POST http://localhost:7007/api/notifications/notifications -H "Content-Type: application/json" -d '{"title": "My message title", "message": "I have nothing to say", "origin": "my-origin", "targetUsers": ["default/manager"]}' | jq '.'
 ```
-   
+
 * An example response could look like this
 ```yaml
 {
@@ -121,26 +121,26 @@ eval $TRIGGER_CR_CMD | jq '.';
 ```
 
 * Wait for a minute or two before proceeding to the next step, to view notifications created by the workflow, to remind the approver to approve the created change request.
-    * In the current implementation this reminder is generated every `30s` by the workflow.  
+    * In the current implementation this reminder is generated every `30s` by the workflow.
 
 * After this wait, login to notifications service's postgres database console.
 
 * You will see `reminder` notification(s) created by `Notifications service` as shown in the following example.
 ```text
-                  id                  |                               message                               
+                  id                  |                               message
 --------------------------------------+---------------------------------------------------------------------
  8a3c945d-9009-4188-a28e-17ceee853a99 | Manager, please approve the change request: CHG0030045
 ```
 
 ### End the workflow by approving the change request
 
-* Login to the ServiceNow instance UI with `manager` user and credentials. 
+* Login to the ServiceNow instance UI with `manager` user and credentials.
 * Click All -> My Approvals menu item, in the resulting list, click the change request that was created.
 * In the change request detail screen, set the `State` to `Approved` and click `Update`.
-* As the change request is approved, you will see a `thank you` notification created by `Notifications service` as shown in the following example. 
+* As the change request is approved, you will see a `thank you` notification created by `Notifications service` as shown in the following example.
 Note: this may appear after a few seconds, as the workflow needs to wait for completion of the timeout event of `30s`, before this notification is created.
 ```text
-                  id                  |                               message                               
+                  id                  |                               message
 --------------------------------------+---------------------------------------------------------------------
  3e9cd0a6-c4c8-4ea1-973a-dbb063279397 | Manager, thanks a ton for approving the change request: CHG0030045
 ```

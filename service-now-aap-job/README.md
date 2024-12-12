@@ -16,10 +16,10 @@ The following inputs are required:
     - assignment group
 
 ## Workflow diagram
-![service-now-aap-job workflow diagram](https://github.com/parodos-dev/serverless-workflows/blob/feat/service-now-aap-job/service-now-aap-job/service-now-aap-job.svg?raw=true)
+![service-now-aap-job workflow diagram](https://github.com/rhdhorchestrator/serverless-workflows/blob/feat/service-now-aap-job/service-now-aap-job/service-now-aap-job.svg?raw=true)
 
 ## Prerequisites
-* A running instance of AAP with admin credentials. 
+* A running instance of AAP with admin credentials.
 * A running instance of Backstage with notification plugin configured
 * An available ServiceNow instance with admin credentials.
 
@@ -212,7 +212,7 @@ export DELETE_SYS_ID=`echo ${NEW_GRP_ROLE_ASSOC_SYS_ID} |  tr -d "\""`
 curl "${SN_SERVER}/api/now/table/sys_group_has_role/${DELETE_SYS_ID}" \
 --request DELETE \
 --header ${ACCEPT} \
---header ${AUTH_HEADER} 
+--header ${AUTH_HEADER}
 ```
 
 ### DELETE APPROVER USER ASSOCIATION WITH APPROVER GROUP
@@ -221,7 +221,7 @@ export DELETE_SYS_ID=`echo ${NEW_GRP_ROLE_ASSOC_SYS_ID} |  tr -d "\""`
 curl "${SN_SERVER}/api/now/table/sys_user_grmember/${DELETE_SYS_ID}" \
 --request DELETE \
 --header ${ACCEPT} \
---header ${AUTH_HEADER} 
+--header ${AUTH_HEADER}
 ```
 
 ### DELETE APPROVER GROUP
@@ -230,7 +230,7 @@ export DELETE_SYS_ID=`echo ${NEW_APPRV_GRP_SYS_ID} |  tr -d "\""`
 curl "${SN_SERVER}/api/now/table/sys_user_group/${DELETE_SYS_ID}" \
 --request DELETE \
 --header ${ACCEPT} \
---header ${AUTH_HEADER} 
+--header ${AUTH_HEADER}
 ```
 
 ### DELETE APPROVER USER
@@ -239,5 +239,5 @@ export DELETE_SYS_ID=`echo ${NEW_APPRV_USER_SYS_ID} |  tr -d "\""`
 curl "${SN_SERVER}/api/now/table/sys_user/${DELETE_SYS_ID}" \
 --request DELETE \
 --header ${ACCEPT} \
---header ${AUTH_HEADER} 
+--header ${AUTH_HEADER}
 ```

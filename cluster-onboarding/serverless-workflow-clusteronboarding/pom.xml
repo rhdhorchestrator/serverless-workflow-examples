@@ -5,7 +5,7 @@
   <groupId>com.redhat.rhdh.orchestrator</groupId>
   <artifactId>serverless-workflow-onboarding</artifactId>
   <parent>
-    <groupId>dev.parodos</groupId>
+    <groupId>io.rhdhorchestrator</groupId>
     <artifactId>swf-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../../swf-parent</relativePath>

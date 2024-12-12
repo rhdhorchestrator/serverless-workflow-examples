@@ -5,10 +5,10 @@ The following two (2) inputs are required:
 - Inventory group
 
 ## Workflow diagram
-![AAP job workflow diagram](https://github.com/parodos-dev/serverless-workflow-examples/blob/main/aap-job/aap-job.svg?raw=true)
+![AAP job workflow diagram](https://github.com/rhdhorchestrator/serverless-workflow-examples/blob/main/aap-job/aap-job.svg?raw=true)
 
 ## Prerequisites
-* A running instance of AAP with admin credentials. 
+* A running instance of AAP with admin credentials.
 * A running instance of Backstage notification plugin.
 
 ## Workflow application configuration

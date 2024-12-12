@@ -23,4 +23,4 @@ Please note that this endpoint has been created for demo purposes so it is not g
 - `Jira Project Key` [required] - the Jira Project Key to which the workflow is configured to work and has permission to create and update and issue of type Task.
 
 ## Workflow diagram
-![Application Onboarding diagram](https://github.com/parodos-dev/serverless-workflow-examples/blob/main/application-onboarding/application-onboarding.svg?raw=true)
+![Application Onboarding diagram](https://github.com/rhdhorchestrator/serverless-workflow-examples/blob/main/application-onboarding/application-onboarding.svg?raw=true)

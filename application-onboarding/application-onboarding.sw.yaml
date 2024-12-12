@@ -49,7 +49,7 @@ states:
           refName: jiraCreateIssue
           arguments:
             fields:
-              description: '"Please create a new Github Repository: https://github.com/parodos-dev/application-onboarding \n Go to https://github.com/new"'
+              description: '"Please create a new Github Repository: https://github.com/rhdhorchestrator/application-onboarding \n Go to https://github.com/new"'
               issuetype:
                 name: Task
               labels:
