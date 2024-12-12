@@ -1,4 +1,4 @@
-package com.redhat.parodos.workflow.clusteronboarding;
+package com.redhat.rhdhorchestrator.workflow.clusteronboarding;
 
 
 import jakarta.enterprise.context.ApplicationScoped;

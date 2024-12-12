@@ -1,7 +1,7 @@
-package dev.parodos;
+package io.rhdhorchestrator;
 
 
-import dev.parodos.service.ClusterOnboardingService;
+import io.rhdhorchestrator.service.ClusterOnboardingService;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
 import jakarta.enterprise.context.ApplicationScoped;

@@ -1,6 +1,6 @@
 # Serverless Workflow Examples
 
-This repository contains a comprehensive collection of serverless workflow examples related to *Parodos*.
+This repository contains a comprehensive collection of serverless workflow examples related to *Orchestrator*.
 These examples showcase various applications and use cases of serverless architecture, aiming to provide insights and guidance for software engineers, architects, and managers.
 
 ## Table of Contents
@@ -12,7 +12,7 @@ These examples showcase various applications and use cases of serverless archite
 
 ### Introduction
 
-The `serverless-workflow-examples` repository offers a wide range of examples that demonstrate the capabilities Parodos aims to deliver. From basic functions to complex workflows, this repository serves as a resource for understanding and implementing serverless solutions in the context of Parodos.
+The `serverless-workflow-examples` repository offers a wide range of examples that demonstrate the capabilities the Orchestrator aims to deliver. From basic functions to complex workflows, this repository serves as a resource for understanding and implementing serverless solutions in the context of the Orchestrator.
 
 ### Getting Started
 

@@ -1,4 +1,4 @@
-package dev.parodos.service;
+package dev.rhdhorchestrator.service;
 
 import io.fabric8.kubernetes.api.model.IntOrString;
 import io.fabric8.kubernetes.api.model.Service;

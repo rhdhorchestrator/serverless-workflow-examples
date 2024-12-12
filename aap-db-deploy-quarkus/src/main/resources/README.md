@@ -6,10 +6,10 @@ The following two (2) inputs are required:
 - Inventory group
 
 ## Workflow diagram
-![aap-db-deploy workflow diagram](https://github.com/parodos-dev/serverless-workflows/blob/feat/aap-db-deploy/aap-db-deploy/aap-db-deploy.svg?raw=true)
+![aap-db-deploy workflow diagram](https://github.com/rhdhorchestrator/serverless-workflows/blob/feat/aap-db-deploy/aap-db-deploy/aap-db-deploy.svg?raw=true)
 
 ## Prerequisites
-* A running instance of AAP with admin credentials. 
+* A running instance of AAP with admin credentials.
 * A running instance of Backstage notification plugin.
 * An OCP cluster with a ServiceAcount (SA) having permission to create and get Deployment, Service and Route.
 

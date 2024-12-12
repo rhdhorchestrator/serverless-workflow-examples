@@ -1,4 +1,4 @@
-package dev.parodos;
+package io.rhdhorchestrator;
 
 import io.quarkus.funqy.knative.events.CloudEvent;
 import io.quarkus.funqy.knative.events.CloudEventBuilder;
