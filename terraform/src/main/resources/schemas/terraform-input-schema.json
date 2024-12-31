@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Terraform input parameters",
+    "type": "object",
+    "properties": {
+        "workspaceId": {
+            "type": "string"
+        },
+        "sourceUrl": {
+            "type": "string",
+            "description": "Link to a raw github tar file to hold Terraform Configurations"
+        }
+    },
+    "required": [
+        "workspaceId",
+        "sourceUrl"
+    ]
+}
