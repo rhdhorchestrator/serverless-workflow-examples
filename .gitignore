@@ -37,3 +37,5 @@ Makefile
 pipeline/*
 kn
 scripts/
+shared/
+.env
