@@ -116,10 +116,10 @@ states:
           arguments:
             recipients:
               type: "entity"
-              entityRef: ["user:default/guest"]
+              entityRef: .recipients
             payload:
               title: '"Terraform Workflow Failed"'
-              description: '"Terraform job workflow id: " + $WORKFLOW.instanceId " has failed to provision the Terraform configurations and finished with the following status: " + .terraformRun.data.attributes.status'
+              description: '"Terraform job workflow id: " + $WORKFLOW.instanceId + " has failed to provision the Terraform configurations and finished with the following status: " + .terraformRun.data.attributes.status'
               scope: "Terraform Job Workflow"
               topic: "Terraform Job Workflow"
               link: .launchedJob.outputUrl
@@ -132,10 +132,10 @@ states:
           arguments:
             recipients:
               type: "entity"
-              entityRef: ["user:default/guest"]
+              entityRef: .recipients
             payload:
               title: '"Terraform Workflow Failed"'
-              description: '"Terraform job workflow id: " + $WORKFLOW.instanceId " has failed to provision the Terraform configurations. The HTTP client retured the error code:" + .returnObject.returnCode +" and the error message: " + .returnObject.errorMessage '
+              description: '"Terraform job workflow id: " + $WORKFLOW.instanceId + " has failed to provision the Terraform configurations. The HTTP client retured the error code:" + .returnObject.returnCode +" and the error message: " + .returnObject.errorMessage '
               scope: "Terraform Job Workflow"
               topic: "Terraform Job Workflow"
     end: true
@@ -147,7 +147,7 @@ states:
           arguments:
             recipients:
               type: "entity"
-              entityRef: ["user:default/guest"]
+              entityRef: .recipients
             payload:
               title: '"Terraform Workflow Succeeded"'
               description: '"Terraform job workflow id: " + $WORKFLOW.instanceId + " has successfully applied the Terraform Config and finished with the following status: " + .terraformRun.data.attributes.status"'

@@ -39,3 +39,4 @@ kn
 scripts/
 shared/
 .env
+setup/
