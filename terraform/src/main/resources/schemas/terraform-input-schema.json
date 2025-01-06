@@ -6,13 +6,13 @@
         "workspaceId": {
             "type": "string"
         },
-        "sourceUrl": {
+        "tarArchiveSourceURL": {
             "type": "string",
             "description": "Link to a raw github tar file to hold Terraform Configurations"
         }
     },
     "required": [
         "workspaceId",
-        "sourceUrl"
+        "tarArchiveSourceURL"
     ]
 }

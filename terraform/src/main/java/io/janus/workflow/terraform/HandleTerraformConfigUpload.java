@@ -13,17 +13,15 @@ import java.io.OutputStream;
 
 @ApplicationScoped
 public class HandleTerraformConfigUpload {
-    public int UploadTerraformConfig(String sourceUrl, String targetUri) {
+    public ReturnObject UploadTerraformConfig(String tarArchiveSourceURL, String targetURLString) {
 
         try {
-
             HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(sourceUrl)).GET().build();
-            HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream()); // not
+            HttpRequest request = HttpRequest.newBuilder().uri(URI.create(tarArchiveSourceURL)).GET().build();
+            HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
 
-            URI uri = new URI(targetUri);
-            URL targetUrl = uri.toURL();
-            HttpURLConnection connection = (HttpURLConnection) targetUrl.openConnection();
+            URL targetURL = new URI(targetURLString).toURL();
+            HttpURLConnection connection = (HttpURLConnection) targetURL.openConnection();
             connection.setDoOutput(true);
             connection.setRequestMethod("PUT");
             connection.setRequestProperty("Content-Type", "application/octet-stream");
@@ -36,23 +34,26 @@ public class HandleTerraformConfigUpload {
                 while ((bytesRead = inputStream.read(buffer)) != -1) {
                     outputStream.write(buffer, 0, bytesRead);
                 }
-
-            }
-
-            catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-                return -1;
+                ReturnObject returnObject = new ReturnObject(connection.getResponseCode());
+                if (connection.getErrorStream() != null) {
+                    returnObject.setErrorMessage(connection.getErrorStream().toString());
+                }
+                connection.disconnect();
+                return returnObject;
             }
-            int rc = connection.getResponseCode();
+
+            ReturnObject returnObject = new ReturnObject(connection.getResponseCode());
+            if (connection.getErrorStream() != null) {
+                returnObject.setErrorMessage(connection.getErrorStream().toString());
+            }
             connection.disconnect();
-            return rc;
-        }
+            return returnObject;
 
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return -1;
+            return new ReturnObject(-1, "error unrelated to HTTP connection");
         }
-
     }
-
 }
