@@ -60,7 +60,7 @@ states:
   - name: EvaluateConfigUploadStatus
     type: switch
     dataConditions:
-      - condition: (.returnObject.errorMessage == "")
+      - condition: (.returnObject.returnCode >= 200) and (.returnObject.returnCode < 300)
         transition:
           nextState: GetTerraformRun
     defaultCondition:
@@ -135,7 +135,7 @@ states:
               entityRef: .recipients
             payload:
               title: '"Terraform Workflow Failed"'
-              description: '"Terraform job workflow id: " + $WORKFLOW.instanceId + " has failed to provision the Terraform configurations. The HTTP client retured the error code:" + .returnObject.returnCode +" and the error message: " + .returnObject.errorMessage '
+              description: '"Terraform job workflow id: " + $WORKFLOW.instanceId + " has failed to provision the Terraform configurations. The HTTP client retured the error code: " + .returnObject.returnCode + " and the error message: " + .returnObject.errorMessage '
               scope: "Terraform Job Workflow"
               topic: "Terraform Job Workflow"
     end: true
