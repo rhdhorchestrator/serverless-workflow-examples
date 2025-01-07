@@ -13,6 +13,10 @@ The following inputs are required:
 
 An example for such tar file can be seen [here.](https://github.com/ElaiShalevRH/TerraformDemo)
 
+## Workflow diagram
+![Terraform workflow diagram](https://github.com/rhdhorchestrator/serverless-workflow-examples/blob/main/terraform/terraform.svg?raw=true)
+
+
 ## Prerequisites
 * A running instance of Terraform Cloud / Enterprise, with a Project and a Workspace created. A Workspace ID is issued and will be used in the workflows input schema. 
 * A running instance of Backstage with notification plugin configured.
