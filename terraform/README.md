@@ -14,7 +14,7 @@ The following inputs are required:
 An example for such tar file can be seen [here.](https://github.com/ElaiShalevRH/TerraformDemo)
 
 ## Workflow diagram
-![Terraform workflow diagram](https://github.com/rhdhorchestrator/serverless-workflow-examples/blob/main/terraform/terraform.svg?raw=true)
+![Terraform workflow diagram](https://github.com/rhdhorchestrator/serverless-workflow-examples/blob/main/terraform/src/main/resources/terraform.svg?raw=true)
 
 
 ## Prerequisites
