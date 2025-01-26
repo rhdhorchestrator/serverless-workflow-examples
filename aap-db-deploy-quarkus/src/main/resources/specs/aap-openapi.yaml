@@ -5,7 +5,7 @@ info:
 servers:
   - url: https://your-app-platform.io/
 paths:
-  /api/v2/job_templates/{job_template_id}/launch/:
+  /api/controller/v2/job_templates/{job_template_id}/launch/:
     post:
       description: Launch a job from a template id
       operationId: launchJob
@@ -35,7 +35,7 @@ paths:
                 $ref: "#/components/schemas/UnauthorizedError"
       security:
         - basicAuth: []
-  /api/v2/jobs/{job_id}/:
+  /api/controller/v2/jobs/{job_id}/:
     get:
       description: Retrieve a job from a job id
       operationId: getJob

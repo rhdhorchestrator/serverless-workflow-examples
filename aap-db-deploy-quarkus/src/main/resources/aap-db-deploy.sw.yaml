@@ -38,6 +38,70 @@ functions:
   - name: increaseApplicationStatusSyncedRetries
     type: expression
     operation: ".applicationStatusSyncedRetries=.applicationStatusSyncedRetries + 1"
+  - name: templateSuccessResult
+    type: expression
+    operation: '{
+      "result": {
+      "outputs":[
+      {
+      "key":"Component in Catalog",
+      "value": $SECRET.rhdh_url + "/catalog/default/component/" + .component.repoName,
+      "format":"link"
+      }]
+      }
+      }'
+  - name: templateErrorResult
+    type: expression
+    operation: '{
+      "result": {
+      "completedWith":"error",
+      "message": "Launching software template " + $SECRET.software_template_ref + " failed.",
+      "outputs":[]
+      }
+      }'
+  - name: successResult
+    type: expression
+    operation: '{
+      "result": {
+      "completedWith":"success",
+      "message": "Application " + .java.artifactId + " deployed.",
+      "outputs":[
+      {
+      "key":"AAP Job",
+      "value": $SECRET.rhdh_url + "/catalog/default/component/" + .component.repoName,
+      "format":"link"
+      },
+      {
+      "key":"Component in Catalog",
+      "value": $SECRET.rhdh_url + "/catalog/default/component/" + .component.repoName,
+      "format":"link"
+      }]
+      }
+      }'
+  - name: errorResult
+    type: expression
+    operation: '{
+      "result": {
+      "completedWith":"error",
+      "message": "Creation of application " + .java.artifactId + " failed.",
+      "outputs":[
+      {
+      "key":"AAP Job",
+      "value": $SECRET.rhdh_url + "/catalog/default/component/" + .component.repoName,
+      "format":"link"
+      },
+      {
+      "key":"Component in Catalog",
+      "value": $SECRET.rhdh_url + "/catalog/default/component/" + .component.repoName,
+      "format":"link"
+      },
+      {
+      "key":"GitHub Action",
+      "value": ".actionWorkflowRuns.workflow_runs[0].html_url",
+      "format":"link"
+      }]
+      }
+      }'
 states:
   - name: LaunchSoftwareTemplate
     type: operation
@@ -103,6 +167,8 @@ states:
     type: operation
     actions:
       - functionRef:
+          refName: templateSuccessResult
+      - functionRef:
           refName: createNotification
           arguments:
             recipients:
@@ -118,6 +184,9 @@ states:
   - name: SendTaskFailureNotification
     type: operation
     actions:
+      - name: templateErrorResult
+        functionRef:
+          refName: templateErrorResult
       - functionRef:
           refName: createNotification
           arguments:
@@ -249,6 +318,9 @@ states:
   - name: SendGithubActionFailureNotification
     type: operation
     actions:
+      - name: setOutput
+        functionRef:
+          refName: errorResult
       - functionRef:
           refName: createNotification
           arguments:
@@ -323,4 +395,7 @@ states:
               topic: "AAP DB Deploy"
               link: '$SECRET.rhdh_url + "/catalog/default/component/" + .component.repoName + "/cd"'
               severity: "normal"
+      - name: setOutput
+        functionRef:
+          refName: successResult
     end: true
