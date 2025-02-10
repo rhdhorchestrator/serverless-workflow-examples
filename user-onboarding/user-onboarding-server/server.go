@@ -25,7 +25,7 @@ var (
 
 // Cleanup function to remove "Ready" users after 5 minutes
 func cleanupUser(userID string) {
-	time.Sleep(2 * time.Minute) // Wait for 5 minutes
+	time.Sleep(5 * time.Minute) // Wait for 5 minutes
 
 	mu.Lock()
 	defer mu.Unlock()

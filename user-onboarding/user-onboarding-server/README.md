@@ -12,27 +12,27 @@ This project implements a simple Go server that exposes a REST API for simulatin
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
-- Podman
+- Podman/Docker
 - Go (if you plan to build the project manually)
-- Kubernetes (if you want to deploy to a cluster)
+- Kubernetes/OCP (if you want to deploy to a cluster)
 
 ## Building the Project
 To build the Go project and the image, replace organization based on your needs:
 
 ```bash
-podman build -t podman build -t quay.io/orchestrator/user-onboarding:v1 .
+podman build -t quay.io/orchestrator/user-onboarding-server:v1 .
 ```
 
 and push the image to your target registry:
 ```bash
-podman push quay.io/orchestrator/user-onboarding:v1
+podman push quay.io/orchestrator/user-onboarding-server:v1
 ```
 
 ## Running the Project Locally
 
 ### With Podman
 ```bash
-podman run -it -p 8080:8080 quay.io/orchestrator/user-onboarding:v1
+podman run -it -p 8080:8080 quay.io/orchestrator/user-onboarding-server:v1
 ```
 
 ### With Go Server Directly
@@ -63,16 +63,16 @@ The third exact call (with the same user ID) will change the status to `Ready`.
 ```
 
 # Kubernetes Deployment
-The [manifests folder](./manifests/) contains the required resources for deploying the server on a K8s cluster.
+The [manifests folder](../manifests/) contains the required resources for deploying the server on a K8s cluster.
 Simply create the resources on a cluster:
 ```bash
-kubectl apply -f ./manifests/deployment.yaml
-kubectl apply -f ./manifests/service.yaml
+kubectl apply -f ../manifests/00-deployment.yaml
+kubectl apply -f ../manifests/00-service.yaml
 ```
 
 Once the deployment is ready, expose the service:
 ```bash
-kubectl port-forward svc/user-onboarding-service 8080:80
+kubectl port-forward svc/user-onboarding 8080:8080
 ```
 
 and test with:

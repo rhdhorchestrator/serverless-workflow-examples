@@ -3,9 +3,6 @@ info:
   title: User Onboarding API
   description: API for simulating a user onboarding process, where a user reaches "Ready" status after three requests.
   version: 1.0.0
-servers:
-  - url: http://localhost:8080
-    description: Local development server
 paths:
   /onboard:
     post:

@@ -4,7 +4,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
-      "userid": {
+      "userId": {
         "title": "The user ID that triggers the workflow",
         "description": "The user that triggers the workflow",
         "type": "string",
