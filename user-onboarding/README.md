@@ -1,7 +1,7 @@
 # User Onboarding workflow
 The workflow is an example workflow for testing purposes, for testing access to external systems, loops and sleep.
 The workflow registers a new user into a system, and after 3 checks it marks the user onboarding as completed.
-Between cycles the workflows sleeps for few seconds.
+The workflow sleeps for few seconds between cycles.
 
 ## Workflow application configuration
 Application properties can be initialized from environment variables before running the application:
