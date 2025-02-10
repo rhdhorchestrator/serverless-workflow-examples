@@ -14,4 +14,4 @@ Application properties can be initialized from environment variables before runn
 
 ## Installation on OCP
 For installing on OCP, there is a need to deploy all of the manifests from [manifests folder](./manifests/), but
-prior to that, to set the values in the secret file according to the installation of the user onboarding cluster and the target RHDH instance.
+prior to that, to set the values [in the secret file](./manifests/00-secret_user-onboarding.yaml) according to the installation of the user onboarding cluster and the target RHDH instance.
