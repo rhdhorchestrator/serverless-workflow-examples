@@ -2,7 +2,7 @@ id: user-onboarding
 version: "1.0"
 specVersion: "0.8"
 name: "User Onboarding"
-description: Onboarding users - workflow for testing
+description: Onboarding users - e.g for testing
 dataInputSchema: schemas/user-onboarding-schema.json
 extensions:
   - extensionid: workflow-output-schema

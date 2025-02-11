@@ -2,7 +2,7 @@ apiVersion: sonataflow.org/v1alpha08
 kind: SonataFlow
 metadata:
   annotations:
-    sonataflow.org/description: Onboarding users - workflow for testing
+    sonataflow.org/description: Onboarding users - e.g for testing
     sonataflow.org/expressionLang: jq
     sonataflow.org/profile: gitops
     sonataflow.org/version: "1.0"
