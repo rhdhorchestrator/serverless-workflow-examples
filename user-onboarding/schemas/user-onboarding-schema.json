@@ -1,5 +1,5 @@
   {
-    "$id": "classpath:/schemas/create-ocp-project-schema.json",
+    "$id": "classpath:/schemas/user-onboarding-schema.json",
     "title": "Workflow input data",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -34,7 +34,7 @@
       }
     },
     "required": [
-      "userid",
+      "userId",
       "iterationNum",
       "recipients"
     ]

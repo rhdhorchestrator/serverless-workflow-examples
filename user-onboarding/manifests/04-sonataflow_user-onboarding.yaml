@@ -2,7 +2,7 @@ apiVersion: sonataflow.org/v1alpha08
 kind: SonataFlow
 metadata:
   annotations:
-    sonataflow.org/description: Creating an OpenShift Project
+    sonataflow.org/description: Onboarding users - e.g for testing
     sonataflow.org/expressionLang: jq
     sonataflow.org/profile: gitops
     sonataflow.org/version: "1.0"
@@ -28,10 +28,44 @@ spec:
         operation: sysout
         type: custom
       - name: successResult
-        operation: '{ "result": { "message": "User " + .userid + " status is Ready", "outputs":[ { "key":"User ID", "value": .userid, "format":"string" }, { "key":"Iteration Number", "value": .iterationNum, "format":"integer" } ] } }'
+        operation: |
+          {
+            "result": {
+            "message": "User " + .userId + " is ready",
+            "outputs":[
+              {
+                "key":"User ID",
+                "value": .userId,
+                "format":"text"
+              },
+              {
+                "key":"Iteration Number",
+                "value": .iterationNum|tostring,
+                "format":"number"
+              }
+            ]
+            }
+          }
         type: expression
       - name: userStatusInProgressResult
-        operation: '{ "result": { "message": "User " + .userid + " status is In Progress", "outputs":[ { "key":"User ID", "value": .userid, "format":"string" }, { "key":"Iteration Number", "value": .iterationNum, "format":"integer" } ] } }'
+        operation: |
+          {
+            "result": {
+            "message": "User " + .userId + " is in progress",
+            "outputs":[
+              {
+                "key":"User ID",
+                "value": .userId,
+                "format":"text"
+              },
+              {
+                "key":"Iteration Number",
+                "value": .iterationNum|tostring,
+                "format":"number"
+              }
+            ]
+            }
+          }
         type: expression
     start:
       stateName: Send new user request
@@ -43,9 +77,8 @@ spec:
               useResults: true
             functionRef:
               arguments:
-                fields:
-                  name: .username
-                  user_id: .userid
+                name: .username
+                user_id: .userId
               invoke: sync
               refName: checkUserOnboardingStatus
             name: checkUserOnboardingStatus
@@ -93,9 +126,8 @@ spec:
               useResults: true
             functionRef:
               arguments:
-                fields:
-                  name: .username
-                  user_id: .userid
+                name: .username
+                user_id: .userId
               invoke: sync
               refName: checkUserOnboardingStatus
             name: Get user onboarding status
@@ -128,7 +160,7 @@ spec:
                 payload:
                   description: Onboarding user completed
                   severity: normal
-                  title: '"Onboarding user " + .userid + " completed"'
+                  title: '"Onboarding user " + .userId + " completed"'
                   topic: Onboarding users
                 recipients:
                   entityRef: .recipients
