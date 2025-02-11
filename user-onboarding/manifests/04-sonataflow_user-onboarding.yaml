@@ -2,7 +2,7 @@ apiVersion: sonataflow.org/v1alpha08
 kind: SonataFlow
 metadata:
   annotations:
-    sonataflow.org/description: User Onboarding
+    sonataflow.org/description: Onboarding users - workflow for testing
     sonataflow.org/expressionLang: jq
     sonataflow.org/profile: gitops
     sonataflow.org/version: "1.0"
@@ -28,10 +28,44 @@ spec:
         operation: sysout
         type: custom
       - name: successResult
-        operation: '{ "result": { "message": "User " + .userid + " status is Ready", "outputs":[ { "key":"User ID", "value": .userid, "format":"string" }, { "key":"Iteration Number", "value": .iterationNum, "format":"integer" } ] } }'
+        operation: |
+          {
+            "result": {
+            "message": "User " + .userId + " is ready",
+            "outputs":[
+              {
+                "key":"User ID",
+                "value": .userId,
+                "format":"text"
+              },
+              {
+                "key":"Iteration Number",
+                "value": .iterationNum|tostring,
+                "format":"number"
+              }
+            ]
+            }
+          }
         type: expression
       - name: userStatusInProgressResult
-        operation: '{ "result": { "message": "User " + .userid + " status is In Progress", "outputs":[ { "key":"User ID", "value": .userid, "format":"string" }, { "key":"Iteration Number", "value": .iterationNum, "format":"integer" } ] } }'
+        operation: |
+          {
+            "result": {
+            "message": "User " + .userId + " is in progress",
+            "outputs":[
+              {
+                "key":"User ID",
+                "value": .userId,
+                "format":"text"
+              },
+              {
+                "key":"Iteration Number",
+                "value": .iterationNum|tostring,
+                "format":"number"
+              }
+            ]
+            }
+          }
         type: expression
     start:
       stateName: Send new user request
@@ -43,9 +77,8 @@ spec:
               useResults: true
             functionRef:
               arguments:
-                fields:
-                  name: .username
-                  user_id: .userid
+                name: .username
+                user_id: .userId
               invoke: sync
               refName: checkUserOnboardingStatus
             name: checkUserOnboardingStatus
@@ -57,7 +90,7 @@ spec:
             name: setOutput
         name: Send new user request
         transition:
-          nextState: "Notify: New user created"
+          nextState: 'Notify: New user created'
         type: operation
       - actionMode: sequential
         actions:
@@ -75,14 +108,14 @@ spec:
                   type: entity
               invoke: sync
               refName: createNotification
-            name: "Create notification: New user created"
+            name: 'Create notification: New user created'
           - actionDataFilter:
               useResults: true
             functionRef:
               invoke: sync
               refName: userStatusInProgressResult
             name: setOutput
-        name: "Notify: New user created"
+        name: 'Notify: New user created'
         transition:
           nextState: Poll user onboarding status
         type: operation
@@ -93,9 +126,8 @@ spec:
               useResults: true
             functionRef:
               arguments:
-                fields:
-                  name: .username
-                  user_id: .userid
+                name: .username
+                user_id: .userId
               invoke: sync
               refName: checkUserOnboardingStatus
             name: Get user onboarding status
@@ -113,7 +145,7 @@ spec:
           - condition: .userOnboardingResponse.status == "Ready"
             name: User onboarding completed
             transition:
-              nextState: "Notify: User onboarding completed"
+              nextState: 'Notify: User onboarding completed'
         defaultCondition:
           transition:
             nextState: Poll user onboarding status
@@ -128,14 +160,14 @@ spec:
                 payload:
                   description: Onboarding user completed
                   severity: normal
-                  title: '"Onboarding user " + .userid + " completed"'
+                  title: '"Onboarding user " + .userId + " completed"'
                   topic: Onboarding users
                 recipients:
                   entityRef: .recipients
                   type: entity
               invoke: sync
               refName: createNotification
-            name: "Create notification: Onboarding user completed"
+            name: 'Create notification: Onboarding user completed'
           - actionDataFilter:
               useResults: true
             functionRef:
@@ -144,7 +176,7 @@ spec:
             name: setOutput
         end:
           terminate: true
-        name: "Notify: User onboarding completed"
+        name: 'Notify: User onboarding completed'
         type: operation
   podTemplate:
     container:
