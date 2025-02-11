@@ -1,8 +1,8 @@
 id: user-onboarding
 version: "1.0"
 specVersion: "0.8"
-name: "Create OpenShift Project"
-description: Creating an OpenShift Project
+name: "User Onboarding"
+description: Onboarding users - workflow for testing
 dataInputSchema: schemas/user-onboarding-schema.json
 extensions:
   - extensionid: workflow-output-schema
@@ -28,12 +28,12 @@ functions:
           {
             "key":"User ID",
             "value": .userId,
-            "format":"string"
+            "format":"text"
           },
           {
             "key":"Iteration Number",
-            "value": .iterationNum,
-            "format":"integer"
+            "value": .iterationNum|tostring,
+            "format":"number"
           }
         ]
         }
@@ -48,12 +48,12 @@ functions:
           {
             "key":"User ID",
             "value": .userId,
-            "format":"string"
+            "format":"text"
           },
           {
             "key":"Iteration Number",
-            "value": .iterationNum,
-            "format":"integer"
+            "value": .iterationNum|tostring,
+            "format":"number"
           }
         ]
         }
@@ -67,9 +67,8 @@ states:
         functionRef:
           refName: checkUserOnboardingStatus
           arguments:
-            fields:
-              user_id: .userId
-              name: .username
+            user_id: .userId
+            name: .username
         actionDataFilter:
           toStateData: .userOnboardingResponse
       - name: setOutput
@@ -104,9 +103,8 @@ states:
         functionRef:
           refName: checkUserOnboardingStatus
           arguments:
-            fields:
-              user_id: .userId
-              name: .username
+            user_id: .userId
+            name: .username
         sleep:
           before: PT3S
     transition: Check user onboarding completed

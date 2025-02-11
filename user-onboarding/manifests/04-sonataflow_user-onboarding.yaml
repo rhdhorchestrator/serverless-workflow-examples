@@ -2,7 +2,7 @@ apiVersion: sonataflow.org/v1alpha08
 kind: SonataFlow
 metadata:
   annotations:
-    sonataflow.org/description: Creating an OpenShift Project
+    sonataflow.org/description: User Onboarding
     sonataflow.org/expressionLang: jq
     sonataflow.org/profile: gitops
     sonataflow.org/version: "1.0"
@@ -57,7 +57,7 @@ spec:
             name: setOutput
         name: Send new user request
         transition:
-          nextState: 'Notify: New user created'
+          nextState: "Notify: New user created"
         type: operation
       - actionMode: sequential
         actions:
@@ -75,14 +75,14 @@ spec:
                   type: entity
               invoke: sync
               refName: createNotification
-            name: 'Create notification: New user created'
+            name: "Create notification: New user created"
           - actionDataFilter:
               useResults: true
             functionRef:
               invoke: sync
               refName: userStatusInProgressResult
             name: setOutput
-        name: 'Notify: New user created'
+        name: "Notify: New user created"
         transition:
           nextState: Poll user onboarding status
         type: operation
@@ -113,7 +113,7 @@ spec:
           - condition: .userOnboardingResponse.status == "Ready"
             name: User onboarding completed
             transition:
-              nextState: 'Notify: User onboarding completed'
+              nextState: "Notify: User onboarding completed"
         defaultCondition:
           transition:
             nextState: Poll user onboarding status
@@ -135,7 +135,7 @@ spec:
                   type: entity
               invoke: sync
               refName: createNotification
-            name: 'Create notification: Onboarding user completed'
+            name: "Create notification: Onboarding user completed"
           - actionDataFilter:
               useResults: true
             functionRef:
@@ -144,7 +144,7 @@ spec:
             name: setOutput
         end:
           terminate: true
-        name: 'Notify: User onboarding completed'
+        name: "Notify: User onboarding completed"
         type: operation
   podTemplate:
     container:

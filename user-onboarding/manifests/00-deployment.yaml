@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-onboarding
+  name: user-onboarding-server
   labels:
-    app: user-onboarding
+    app: user-onboarding-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: user-onboarding
+      app: user-onboarding-server
   template:
     metadata:
       labels:
-        app: user-onboarding
+        app: user-onboarding-server
     spec:
       containers:
-        - name: user-onboarding
+        - name: user-onboarding-server
           image: quay.io/orchestrator/user-onboarding-server:v1
           ports:
             - containerPort: 8080
