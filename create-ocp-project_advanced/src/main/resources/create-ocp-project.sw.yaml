@@ -1,0 +1,140 @@
+id: create-ocp-project
+version: "1.0"
+specVersion: "0.8"
+name: "Create OpenShift Project"
+description: Creating an OpenShift Project
+dataInputSchema: schemas/create-ocp-project__main-schema.json
+extensions:
+  - extensionid: workflow-output-schema
+    outputSchema: schemas/workflow-output-schema.json
+  - extensionid: workflow-uri-definitions
+    definitions:
+      notifications: "https://raw.githubusercontent.com/rhdhorchestrator/serverless-workflows/main/workflows/shared/specs/notifications-openapi.yaml"
+functions:
+  - name: createNotification
+    operation: notifications#createNotification
+  - name: createProjectRequestOpenshiftIoV1Project
+    operation: specs/ocp-project-openapi.yaml#createProjectRequestOpenshiftIoV1Project
+  - name: readProjectOpenshiftIoV1Project
+    operation: specs/ocp-project-openapi.yaml#readProjectOpenshiftIoV1Project
+  - name: createCoreV1NamespacedLimitRange
+    operation: specs/ocp-project-openapi.yaml#createCoreV1NamespacedLimitRange
+  - name: print
+    type: custom
+    operation: sysout
+  - name: successResult
+    type: expression
+    operation: '{
+        "result": {
+          "message": "Project " + .projectName + " active",
+          "outputs":[]
+        }
+      }'
+  - name: errorProjectNotActiveResult
+    type: expression
+    operation: '{
+        "result": {
+          "message": "Project " + .projectName + " not active"
+        }
+      }'
+  - name: errorAuthorizationDeniedResult
+    type: expression
+    operation: '{
+        "result": {
+          "message": "Creation of project " + .projectName + " denied",
+          "outputs":[
+            {
+                "key":"Jira issue",
+                "value": $SECRET.jira_url + "/jira/servicedesk/projects/" + .operationsProjectKey + "/issues/" + .operationsJiraCreateIssueResult.key,
+                "format":"link"
+            }]
+          }
+      }'
+start: "Create Project"
+states:
+  - name: "Create Project"
+    type: operation
+    actions:
+      - name: "Create OCP Project"
+        functionRef:
+          refName: createProjectRequestOpenshiftIoV1Project
+          arguments:
+            kind: ProjectRequest
+            metadata:
+              labels: .labels
+              annotations: .annotations
+              name: .projectName
+            spec:
+              finalizers:
+                - kubernetes
+      - name: "Apply LimitRange to Project"
+        functionRef:
+          refName: createCoreV1NamespacedLimitRange
+          arguments:
+            namespace: .projectName
+            kind: .computeResources.kind
+            metadata: computeResources.metadata
+            spec: computeResources.spec
+    transition:
+      nextState: "Post operation: get project resource"
+  - name: "Post operation: get project resource"
+    type: operation
+    actions:
+      - name: "Get created project"
+        sleep:
+          before: PT10S
+        actionDataFilter:
+          toStateData: .project
+        functionRef:
+          refName: readProjectOpenshiftIoV1Project
+          arguments:
+            name: .projectName
+    transition:
+      nextState: "Post operation: check project resource created successfully"
+  - name: "Post operation: check project resource created successfully"
+    type: switch
+    dataConditions:
+      - name: Project Active
+        condition: .project.status.phase == "Active"
+        transition: Notify project active
+    defaultCondition:
+      transition:
+        nextState: Notify project not active
+  - name: Notify project active
+    type: operation
+    actions:
+      - name: "Create notification: project active"
+        functionRef:
+          refName: createNotification
+          arguments:
+            recipients:
+              type: "entity"
+              entityRef: .recipients
+            payload:
+              title: '"Project " + .projectName + " active"'
+              description: '"Project " + .projectName + " active"'
+              topic: "Create OCP Project workflow"
+              severity: "normal"
+      - name: setOutput
+        functionRef:
+          refName: successResult
+    end: true
+  - name: Notify project not active
+    type: operation
+    actions:
+      - name: "Create notification: project not active"
+        functionRef:
+          refName: createNotification
+          arguments:
+            recipients:
+              type: "entity"
+              entityRef: .recipients
+            payload:
+              title: '"Project " + .projectName + " inactive"'
+              description: '"Project " + .projectName + " inactive"'
+              topic: "Create OCP Project workflow"
+              severity: "high"
+      - name: setOutput
+        functionRef:
+          refName: errorProjectNotActiveResult
+    end: true
