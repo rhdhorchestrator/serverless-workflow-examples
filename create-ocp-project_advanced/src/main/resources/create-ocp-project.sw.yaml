@@ -15,6 +15,8 @@ functions:
     operation: notifications#createNotification
   - name: createProjectRequestOpenshiftIoV1Project
     operation: specs/ocp-project-openapi.yaml#createProjectRequestOpenshiftIoV1Project
+  - name: patchCoreV1Namespace
+    operation: specs/ocp-project-openapi.yaml#patchCoreV1Namespace
   - name: readProjectOpenshiftIoV1Project
     operation: specs/ocp-project-openapi.yaml#readProjectOpenshiftIoV1Project
   - name: createCoreV1NamespacedLimitRange
@@ -61,13 +63,25 @@ states:
           arguments:
             kind: ProjectRequest
             metadata:
-              labels: .labels
-              annotations: .annotations
               name: .projectName
             spec:
               finalizers:
                 - kubernetes
-      - name: "Apply LimitRange to Project"
+    transition: 
+      nextState: Update namespace
+  - name: "Update namespace"
+    type: operation
+    actions:
+      - name: "Apply labels and annotations on namespace"
+        functionRef:
+          refName: patchCoreV1Namespace
+          arguments:
+            name: .projectName
+            metadata:
+              metadata:
+                labels: .labels
+                annotations: .annotations
+      - name: "Apply LimitRange to namspace"
         functionRef:
           refName: createCoreV1NamespacedLimitRange
           arguments:

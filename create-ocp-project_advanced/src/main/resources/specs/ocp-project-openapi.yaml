@@ -7,6 +7,93 @@ servers:
 security:
 - BearerToken: []
 paths:
+  /api/v1/namespaces/{name}:
+    patch:
+      tags:
+      - core_v1
+      description: partially update the specified Namespace
+      operationId: patchCoreV1Namespace
+      parameters:
+      - name: name
+        in: path
+        description: name of the Namespace
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/pretty-tJGM1-ng'
+      - name: dryRun
+        in: query
+        description: "When present, indicates that modifications should not be persisted.\
+          \ An invalid or unrecognized dryRun directive will result in an error response\
+          \ and no further processing of the request. Valid values are: - All: all\
+          \ dry run stages will be processed"
+        schema:
+          type: string
+      - $ref: '#/components/parameters/fieldManager-7c6nTn1T'
+      - name: fieldValidation
+        in: query
+        description: "fieldValidation instructs the server on how to handle objects\
+          \ in the request (POST/PUT/PATCH) containing unknown or duplicate fields.\
+          \ Valid values are: - Ignore: This will ignore any unknown fields that are\
+          \ silently dropped from the object, and will ignore all but the last duplicate\
+          \ field that the decoder encounters. This is the default behavior prior\
+          \ to v1.23. - Warn: This will send a warning via the standard warning response\
+          \ header for each unknown field that is dropped from the object, and for\
+          \ each duplicate field that is encountered. The request will still succeed\
+          \ if there are no other errors, and will only persist the last of any duplicate\
+          \ fields. This is the default in v1.23+ - Strict: This will fail the request\
+          \ with a BadRequest error if any unknown fields would be dropped from the\
+          \ object, or if any duplicate fields are present. The error returned from\
+          \ the server will contain all unknown and duplicate fields encountered."
+        schema:
+          type: string
+      - $ref: '#/components/parameters/force-tOGGb0Yi'
+      requestBody:
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/io.k8s.apimachinery.pkg.apis.meta.v1.Patch'
+          application/strategic-merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/io.k8s.apimachinery.pkg.apis.meta.v1.Patch'
+          application/apply-patch+yaml:
+            schema:
+              $ref: '#/components/schemas/io.k8s.apimachinery.pkg.apis.meta.v1.Patch'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/io.k8s.api.core.v1.Namespace'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/io.k8s.api.core.v1.Namespace'
+            application/vnd.kubernetes.protobuf:
+              schema:
+                $ref: '#/components/schemas/io.k8s.api.core.v1.Namespace'
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/io.k8s.api.core.v1.Namespace'
+            application/yaml:
+              schema:
+                $ref: '#/components/schemas/io.k8s.api.core.v1.Namespace'
+            application/vnd.kubernetes.protobuf:
+              schema:
+                $ref: '#/components/schemas/io.k8s.api.core.v1.Namespace'
+        "401":
+          description: Unauthorized
+          content: {}
+      x-kubernetes-action: patch
+      x-kubernetes-group-version-kind:
+        group: ""
+        kind: Namespace
+        version: v1
+      x-codegen-request-body-name: body
   /api/v1/namespaces/{namespace}/limitranges:
     get:
       tags:
@@ -14,6 +101,12 @@ paths:
       description: list or watch objects of kind LimitRange
       operationId: listCoreV1NamespacedLimitRange
       parameters:
+      - name: namespace
+        in: path
+        description: namespace
+        required: true
+        schema:
+          type: string
       - $ref: '#/components/parameters/allowWatchBookmarks-HC2hJt-J'
       - $ref: '#/components/parameters/continue-QfD61s0i'
       - $ref: '#/components/parameters/fieldSelector-xIcQKXFG'
@@ -57,6 +150,12 @@ paths:
       description: create a LimitRange
       operationId: createCoreV1NamespacedLimitRange
       parameters:
+      - name: namespace
+        in: path
+        description: namespace
+        required: true
+        schema:
+          type: string
       - name: dryRun
         in: query
         description: "When present, indicates that modifications should not be persisted.\
@@ -142,6 +241,7 @@ paths:
       description: create a Project
       operationId: createProjectRequestOpenshiftIoV1Project
       parameters:
+      
       - name: pretty
         in: query
         description: "If 'true', then the output is pretty printed."
@@ -246,11 +346,7 @@ paths:
         required: true
         schema:
           type: string
-      - name: pretty
-        in: query
-        description: "If 'true', then the output is pretty printed."
-        schema:
-          type: string
+      - $ref: '#/components/parameters/pretty-tJGM1-ng'
       responses:
         "200":
           description: OK
@@ -272,10 +368,113 @@ paths:
         group: project.openshift.io
         kind: Project
         version: v1
-      security:
-          - BearerToken: []
 components:
   schemas:
+    io.k8s.api.core.v1.Namespace:
+      type: object
+      properties:
+        apiVersion:
+          type: string
+          description: "APIVersion defines the versioned schema of this representation\
+            \ of an object. Servers should convert recognized schemas to the latest\
+            \ internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+        kind:
+          type: string
+          description: "Kind is a string value representing the REST resource this\
+            \ object represents. Servers may infer this from the endpoint the client\
+            \ submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+        metadata:
+          $ref: '#/components/schemas/io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta'
+        spec:
+          $ref: '#/components/schemas/io.k8s.api.core.v1.NamespaceSpec'
+        status:
+          $ref: '#/components/schemas/io.k8s.api.core.v1.NamespaceStatus'
+      description: Namespace provides a scope for Names. Use of multiple namespaces
+        is optional.
+      x-kubernetes-group-version-kind:
+      - group: ""
+        kind: Namespace
+        version: v1
+    io.k8s.api.core.v1.NamespaceCondition:
+      required:
+      - status
+      - type
+      type: object
+      properties:
+        lastTransitionTime:
+          $ref: '#/components/schemas/io.k8s.apimachinery.pkg.apis.meta.v1.Time'
+        message:
+          type: string
+        reason:
+          type: string
+        status:
+          type: string
+          description: "Status of the condition, one of True, False, Unknown."
+        type:
+          type: string
+          description: Type of namespace controller condition.
+      description: NamespaceCondition contains details about state of namespace.
+    io.k8s.api.core.v1.NamespaceList:
+      required:
+      - items
+      type: object
+      properties:
+        apiVersion:
+          type: string
+          description: "APIVersion defines the versioned schema of this representation\
+            \ of an object. Servers should convert recognized schemas to the latest\
+            \ internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+        items:
+          type: array
+          description: "Items is the list of Namespace objects in the list. More info:\
+            \ https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/"
+          items:
+            $ref: '#/components/schemas/io.k8s.api.core.v1.Namespace'
+        kind:
+          type: string
+          description: "Kind is a string value representing the REST resource this\
+            \ object represents. Servers may infer this from the endpoint the client\
+            \ submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+        metadata:
+          $ref: '#/components/schemas/io.k8s.apimachinery.pkg.apis.meta.v1.ListMeta'
+      description: NamespaceList is a list of Namespaces.
+      x-kubernetes-group-version-kind:
+      - group: ""
+        kind: NamespaceList
+        version: v1
+    io.k8s.api.core.v1.NamespaceSpec:
+      type: object
+      properties:
+        finalizers:
+          type: array
+          description: "Finalizers is an opaque list of values that must be empty\
+            \ to permanently remove object from storage. More info: https://kubernetes.io/docs/tasks/administer-cluster/namespaces/"
+          items:
+            type: string
+      description: NamespaceSpec describes the attributes on a Namespace.
+    io.k8s.api.core.v1.NamespaceStatus:
+      type: object
+      properties:
+        conditions:
+          type: array
+          description: Represents the latest available observations of a namespace's
+            current state.
+          items:
+            $ref: '#/components/schemas/io.k8s.api.core.v1.NamespaceCondition'
+          x-kubernetes-patch-strategy: merge
+          x-kubernetes-patch-merge-key: type
+        phase:
+          type: string
+          description: |-
+            Phase is the current lifecycle phase of the namespace. More info: https://kubernetes.io/docs/tasks/administer-cluster/namespaces/
+
+            Possible enum values:
+             - `"Active"` means the namespace is available for use in the system
+             - `"Terminating"` means the namespace is undergoing graceful termination
+          enum:
+          - Active
+          - Terminating
+      description: NamespaceStatus is information about the current status of a Namespace.
     io.k8s.apimachinery.pkg.api.resource.Quantity:
       description: |-
         Quantity is a fixed-point representation of a number. It provides convenient marshaling/unmarshaling in JSON and YAML, in addition to String() and AsInt64() accessors.
@@ -418,25 +617,6 @@ components:
             $ref: '#/components/schemas/io.k8s.api.core.v1.LimitRangeItem'
       description: LimitRangeSpec defines a min/max usage limit for resources that
         match on kind.
-    io.k8s.api.core.v1.NamespaceCondition:
-      required:
-      - status
-      - type
-      type: object
-      properties:
-        lastTransitionTime:
-          $ref: '#/components/schemas/io.k8s.apimachinery.pkg.apis.meta.v1.Time'
-        message:
-          type: string
-        reason:
-          type: string
-        status:
-          type: string
-          description: "Status of the condition, one of True, False, Unknown."
-        type:
-          type: string
-          description: Type of namespace controller condition.
-      description: NamespaceCondition contains details about state of namespace.
     io.k8s.apimachinery.pkg.apis.meta.v1.Status:
       type: object
       properties:
@@ -609,6 +789,9 @@ components:
       - group: project.openshift.io
         kind: ProjectRequest
         version: v1
+    io.k8s.apimachinery.pkg.apis.meta.v1.Patch:
+      description: Patch is provided to give a concrete name and type to the Kubernetes PATCH request body.
+      type: object
     com.github.openshift.api.project.v1.Project:
       type: object
       properties:
@@ -1349,6 +1532,21 @@ components:
         \ a stream of add, update, and remove notifications. Specify resourceVersion."
       schema:
         type: boolean
+    pretty-tJGM1-ng:
+      name: pretty
+      in: query
+      description: "If 'true', then the output is pretty printed. Defaults to 'false'\
+        \ unless the user-agent indicates a browser or command-line HTTP tool (curl\
+        \ and wget)."
+      schema:
+        type: string
+  requestBodies:
+    body-78PwaGsr:
+      content:
+        '*/*':
+          schema:
+            $ref: '#/components/schemas/io.k8s.apimachinery.pkg.apis.meta.v1.Patch'
+      required: true   
   securitySchemes:
     BearerToken:
       type: http
