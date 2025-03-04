@@ -10,11 +10,18 @@ extensions:
   - extensionid: workflow-uri-definitions
     definitions:
       notifications: "https://raw.githubusercontent.com/rhdhorchestrator/serverless-workflows/main/workflows/shared/specs/notifications-openapi.yaml"
+errors:
+- name: runtimeException
+  code: java.lang.RuntimeException
 functions:
   - name: createNotification
     operation: notifications#createNotification
   - name: createProjectRequestOpenshiftIoV1Project
     operation: specs/ocp-project-openapi.yaml#createProjectRequestOpenshiftIoV1Project
+  - name: deleteProjectOpenshiftIoV1Project
+    operation: specs/ocp-project-openapi.yaml#deleteProjectOpenshiftIoV1Project
+  - name: patchCoreV1Namespace
+    operation: specs/ocp-project-openapi.yaml#patchCoreV1Namespace
   - name: readProjectOpenshiftIoV1Project
     operation: specs/ocp-project-openapi.yaml#readProjectOpenshiftIoV1Project
   - name: createCoreV1NamespacedLimitRange
@@ -50,6 +57,22 @@ functions:
             }]
           }
       }'
+  - name: failureResult
+    type: expression
+    operation: '{
+        "result": {
+          "message": "Project " + .projectName + " failure when updating the project/namespace. Project was deleted.",
+          "outputs":[]
+        }
+      }'
+  - name: abortResult
+    type: expression
+    operation: '{
+        "result": {
+          "message": "Project " + .projectName + " aborted when updating the project/namespace. Project was deleted.",
+          "outputs":[]
+        }
+      }'
 start: "Create Project"
 states:
   - name: "Create Project"
@@ -61,20 +84,36 @@ states:
           arguments:
             kind: ProjectRequest
             metadata:
-              labels: .labels
-              annotations: .annotations
               name: .projectName
             spec:
               finalizers:
                 - kubernetes
-      - name: "Apply LimitRange to Project"
+    transition: 
+      nextState: Update namespace
+  - name: "Update namespace"
+    type: operation
+    compensatedBy: DeleteProjectOnAbort
+    onErrors:
+      - errorRef: runtimeException
+        transition: DeleteProjectOnFailure
+    actions:
+      - name: "Apply labels and annotations on namespace"
+        functionRef:
+          refName: patchCoreV1Namespace
+          arguments:
+            name: .projectName
+            metadata:
+              metadata:
+                labels: .labels
+                annotations: .annotations
+      - name: "Apply LimitRange to namspace"
         functionRef:
           refName: createCoreV1NamespacedLimitRange
           arguments:
             namespace: .projectName
             kind: .computeResources.kind
             metadata: computeResources.metadata
-            spec: computeResources.spec
+            spec: .computeResources.spec
     transition:
       nextState: "Post operation: get project resource"
   - name: "Post operation: get project resource"
@@ -103,18 +142,18 @@ states:
   - name: Notify project active
     type: operation
     actions:
-      - name: "Create notification: project active"
-        functionRef:
-          refName: createNotification
-          arguments:
-            recipients:
-              type: "entity"
-              entityRef: .recipients
-            payload:
-              title: '"Project " + .projectName + " active"'
-              description: '"Project " + .projectName + " active"'
-              topic: "Create OCP Project workflow"
-              severity: "normal"
+      #- name: "Create notification: project active"
+      #  functionRef:
+      #    refName: createNotification
+      #    arguments:
+      #      recipients:
+      #        type: "entity"
+      #        entityRef: .recipients
+      #      payload:
+      #        title: '"Project " + .projectName + " active"'
+      #        description: '"Project " + .projectName + " active"'
+      #        topic: "Create OCP Project workflow"
+      #        severity: "normal"
       - name: setOutput
         functionRef:
           refName: successResult
@@ -122,19 +161,81 @@ states:
   - name: Notify project not active
     type: operation
     actions:
-      - name: "Create notification: project not active"
-        functionRef:
-          refName: createNotification
-          arguments:
-            recipients:
-              type: "entity"
-              entityRef: .recipients
-            payload:
-              title: '"Project " + .projectName + " inactive"'
-              description: '"Project " + .projectName + " inactive"'
-              topic: "Create OCP Project workflow"
-              severity: "high"
+      #- name: "Create notification: project not active"
+      #  functionRef:
+      #    refName: createNotification
+      #    arguments:
+      #      recipients:
+      #        type: "entity"
+      #        entityRef: .recipients
+      #      payload:
+      #        title: '"Project " + .projectName + " inactive"'
+      #        description: '"Project " + .projectName + " inactive"'
+      #        topic: "Create OCP Project workflow"
+      #        severity: "high"
       - name: setOutput
         functionRef:
           refName: errorProjectNotActiveResult
     end: true
+  - name: DeleteProjectOnFailure
+    type: operation
+    metadata:
+      errorMessage: '"Failed to perform actions on project/namespace " + .projectName + "; removing it to avoid hanging and uncomplete project/namspace"'
+    actions:
+      - name: logInfo
+        functionRef:
+          refName: print
+          arguments:
+            message: '"Failed to perform actions on project/namespace " + .projectName + "; removing it to avoid hanging and uncomplete project/namspace"'
+      - name: "deleteProject"
+        functionRef:
+          refName: deleteProjectOpenshiftIoV1Project
+          arguments:
+            name: .projectName
+      #- name: createNotification
+      #  functionRef:
+      #    refName: createNotification
+      #    arguments:
+      #      recipients:
+      #        type: "entity"
+      #        entityRef: .recipients
+      #      payload:
+      #        title: "Create OCP project failure"
+      #        description: '"Failed to perform actions on project/namespace " + .projectName + "; project/namspace deleted from the cluster"'
+      #        topic: "Create OCP Project Workflow"
+      #        severity: "critical"
+      - name: reportFailure
+        functionRef:
+          refName: failureResult
+    end: true
+  - name: DeleteProjectOnAbort
+    type: operation
+    metadata:
+      errorMessage: '"Create OCP Project workflow aborted for project/namespace " + .projectName + "; removing it to avoid hanging and uncomplete project/namspace"'
+    usedForCompensation: true
+    actions:
+      - name: logInfo
+        functionRef:
+          refName: print
+          arguments:
+            message: '"Create OCP Project workflow aborted for project/namespace " + .projectName + "; removing it to avoid hanging and uncomplete project/namspace"'
+      - name: "deleteProject"
+        functionRef:
+          refName: deleteProjectOpenshiftIoV1Project
+          arguments:
+            name: .projectName
+      #- name: createNotification
+      #  functionRef:
+      #    refName: createNotification
+      #    arguments:
+      #      recipients:
+      #        type: "entity"
+      #        entityRef: .recipients
+      #      payload:
+      #        title: "Create OCP project aborted"
+      #        description: '"Create OCP Project workflow aborted for project/namespace " + .projectName + "; removing it to avoid hanging and uncomplete project/namspace"'
+      #        topic: "Create OCP Project Workflow"
+      #        severity: "critical"
+      - name: reportAbort
+        functionRef:
+          refName: abortResult
