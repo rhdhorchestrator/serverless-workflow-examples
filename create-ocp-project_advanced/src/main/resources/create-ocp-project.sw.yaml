@@ -15,6 +15,8 @@ functions:
     operation: notifications#createNotification
   - name: createProjectRequestOpenshiftIoV1Project
     operation: specs/ocp-project-openapi.yaml#createProjectRequestOpenshiftIoV1Project
+  - name: deleteProjectOpenshiftIoV1Project
+    operation: specs/ocp-project-openapi.yaml#deleteProjectOpenshiftIoV1Project
   - name: patchCoreV1Namespace
     operation: specs/ocp-project-openapi.yaml#patchCoreV1Namespace
   - name: readProjectOpenshiftIoV1Project
@@ -52,6 +54,14 @@ functions:
             }]
           }
       }'
+  - name: failureResult
+    type: expression
+    operation: '{
+        "result": {
+          "message": "Project " + .projectName + " failure when updating the project/namespace. Project was deleted.",
+          "outputs":[]
+        }
+      }'
 start: "Create Project"
 states:
   - name: "Create Project"
@@ -71,6 +81,7 @@ states:
       nextState: Update namespace
   - name: "Update namespace"
     type: operation
+    compensatedBy: DeleteProjectOnFailure
     actions:
       - name: "Apply labels and annotations on namespace"
         functionRef:
@@ -152,3 +163,34 @@ states:
         functionRef:
           refName: errorProjectNotActiveResult
     end: true
+  - name: DeleteProjectOnFailure
+    type: operation
+    metadata:
+      errorMessage: '"Failed to perform actions on project/namespace " + .projectName + "; removing it to avoid hanging and uncomplete project/namspace"'
+    usedForCompensation: true
+    actions:
+      - name: logInfo
+        functionRef:
+          refName: print
+          arguments:
+            message: '"Failed to perform actions on project/namespace " + .projectName + "; removing it to avoid hanging and uncomplete project/namspace"'
+      - name: "deleteProject"
+        functionRef:
+          refName: deleteProjectOpenshiftIoV1Project
+          arguments:
+            name: .projectName
+      #- name: createNotification
+      #  functionRef:
+      #    refName: createNotification
+      #    arguments:
+      #      recipients:
+      #        type: "entity"
+      #        entityRef: .recipients
+      #      payload:
+      #        title: "Create OCP project failure"
+      #        description: '"Failed to perform actions on project/namespace " + .projectName + "; project/namspace deleted from the cluster"'
+      #        topic: "Create OCP Project Workflow"
+      #        severity: "critical"
+      - name: reportFailure
+        functionRef:
+          refName: failureResult
