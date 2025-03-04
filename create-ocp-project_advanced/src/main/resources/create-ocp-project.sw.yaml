@@ -10,6 +10,9 @@ extensions:
   - extensionid: workflow-uri-definitions
     definitions:
       notifications: "https://raw.githubusercontent.com/rhdhorchestrator/serverless-workflows/main/workflows/shared/specs/notifications-openapi.yaml"
+errors:
+- name: runtimeException
+  code: java.lang.RuntimeException
 functions:
   - name: createNotification
     operation: notifications#createNotification
@@ -62,6 +65,14 @@ functions:
           "outputs":[]
         }
       }'
+  - name: abortResult
+    type: expression
+    operation: '{
+        "result": {
+          "message": "Project " + .projectName + " aborted when updating the project/namespace. Project was deleted.",
+          "outputs":[]
+        }
+      }'
 start: "Create Project"
 states:
   - name: "Create Project"
@@ -81,7 +92,10 @@ states:
       nextState: Update namespace
   - name: "Update namespace"
     type: operation
-    compensatedBy: DeleteProjectOnFailure
+    compensatedBy: DeleteProjectOnAbort
+    onErrors:
+      - errorRef: runtimeException
+        transition: DeleteProjectOnFailure
     actions:
       - name: "Apply labels and annotations on namespace"
         functionRef:
@@ -98,7 +112,7 @@ states:
           arguments:
             namespace: .projectName
             kind: .computeResources.kind
-            metadata: .computeResources.metadata
+            metadata: computeResources.metadata
             spec: .computeResources.spec
     transition:
       nextState: "Post operation: get project resource"
@@ -167,7 +181,6 @@ states:
     type: operation
     metadata:
       errorMessage: '"Failed to perform actions on project/namespace " + .projectName + "; removing it to avoid hanging and uncomplete project/namspace"'
-    usedForCompensation: true
     actions:
       - name: logInfo
         functionRef:
@@ -194,3 +207,35 @@ states:
       - name: reportFailure
         functionRef:
           refName: failureResult
+    end: true
+  - name: DeleteProjectOnAbort
+    type: operation
+    metadata:
+      errorMessage: '"Create OCP Project workflow aborted for project/namespace " + .projectName + "; removing it to avoid hanging and uncomplete project/namspace"'
+    usedForCompensation: true
+    actions:
+      - name: logInfo
+        functionRef:
+          refName: print
+          arguments:
+            message: '"Create OCP Project workflow aborted for project/namespace " + .projectName + "; removing it to avoid hanging and uncomplete project/namspace"'
+      - name: "deleteProject"
+        functionRef:
+          refName: deleteProjectOpenshiftIoV1Project
+          arguments:
+            name: .projectName
+      #- name: createNotification
+      #  functionRef:
+      #    refName: createNotification
+      #    arguments:
+      #      recipients:
+      #        type: "entity"
+      #        entityRef: .recipients
+      #      payload:
+      #        title: "Create OCP project aborted"
+      #        description: '"Create OCP Project workflow aborted for project/namespace " + .projectName + "; removing it to avoid hanging and uncomplete project/namspace"'
+      #        topic: "Create OCP Project Workflow"
+      #        severity: "critical"
+      - name: reportAbort
+        functionRef:
+          refName: abortResult
