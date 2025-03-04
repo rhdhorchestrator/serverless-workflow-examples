@@ -98,8 +98,8 @@ states:
           arguments:
             namespace: .projectName
             kind: .computeResources.kind
-            metadata: computeResources.metadata
-            spec: computeResources.spec
+            metadata: .computeResources.metadata
+            spec: .computeResources.spec
     transition:
       nextState: "Post operation: get project resource"
   - name: "Post operation: get project resource"
@@ -128,18 +128,18 @@ states:
   - name: Notify project active
     type: operation
     actions:
-      - name: "Create notification: project active"
-        functionRef:
-          refName: createNotification
-          arguments:
-            recipients:
-              type: "entity"
-              entityRef: .recipients
-            payload:
-              title: '"Project " + .projectName + " active"'
-              description: '"Project " + .projectName + " active"'
-              topic: "Create OCP Project workflow"
-              severity: "normal"
+      #- name: "Create notification: project active"
+      #  functionRef:
+      #    refName: createNotification
+      #    arguments:
+      #      recipients:
+      #        type: "entity"
+      #        entityRef: .recipients
+      #      payload:
+      #        title: '"Project " + .projectName + " active"'
+      #        description: '"Project " + .projectName + " active"'
+      #        topic: "Create OCP Project workflow"
+      #        severity: "normal"
       - name: setOutput
         functionRef:
           refName: successResult
@@ -147,18 +147,18 @@ states:
   - name: Notify project not active
     type: operation
     actions:
-      - name: "Create notification: project not active"
-        functionRef:
-          refName: createNotification
-          arguments:
-            recipients:
-              type: "entity"
-              entityRef: .recipients
-            payload:
-              title: '"Project " + .projectName + " inactive"'
-              description: '"Project " + .projectName + " inactive"'
-              topic: "Create OCP Project workflow"
-              severity: "high"
+      #- name: "Create notification: project not active"
+      #  functionRef:
+      #    refName: createNotification
+      #    arguments:
+      #      recipients:
+      #        type: "entity"
+      #        entityRef: .recipients
+      #      payload:
+      #        title: '"Project " + .projectName + " inactive"'
+      #        description: '"Project " + .projectName + " inactive"'
+      #        topic: "Create OCP Project workflow"
+      #        severity: "high"
       - name: setOutput
         functionRef:
           refName: errorProjectNotActiveResult
