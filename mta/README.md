@@ -1,5 +1,9 @@
 # MTA - migration analysis workflow
 
+> **🚨 Deprecation Notice: 🚨**  
+> From Orchestrator release version 1.7, Workflow Types will be retired. All workflows will act as infrastructure workflows, and no workflow will act as an assesment workflow. <br>
+> This workflow, being an assessment workflow, will be obsolete and irrelevant.
+
 # Synopsis
 This workflow is an assessment workflow type, that invokes an application analysis workflow using [MTA][1]
 and returns the [move2kube][3] workflow reference to run next and creates a migration wave in the Jira instance configured, if the analysis is considered to be successful.

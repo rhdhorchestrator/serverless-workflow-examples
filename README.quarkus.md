@@ -3,6 +3,10 @@
 This repository contains a comprehensive collection of serverless workflow examples related to *Orchestrator*.
 These examples showcase various applications and use cases of serverless architecture, aiming to provide insights and guidance for software engineers, architects, and managers.
 
+> **🚨 Deprecation Notice: 🚨**  
+> From Orchestrator release version 1.7, Workflow Types will be retired. All workflows will act as infrastructure workflows, and no workflow will act as an assesment workflow. <br>
+> All  assessment workflows in this repository will be obsolete and irrelevant.
+
 ## Table of Contents
 
 - [Introduction](#introduction)
