@@ -1,5 +1,12 @@
 # Serverless Workflow Examples
 
+> ⚠️ **DEPRECATION NOTICE**  
+> This repository is no longer maintained. All experimental workflows have been moved to:  
+> [rhdhorchestrator/serverless-workflows – workflows/experimentals](https://github.com/rhdhorchestrator/serverless-workflows/tree/main/workflows/experimentals)  
+> Please refer to the new location for the latest versions and updates.
+
+---
+
 This repository contains a comprehensive collection of serverless workflow examples related to *Orchestrator*.
 These examples showcase various applications and use cases of serverless architecture, aiming to provide insights and guidance for software engineers, architects, and managers.
 
